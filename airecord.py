@@ -15,11 +15,14 @@ def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
     paragraphs = file_content.split("\n\n")  # Split text into paragraphs
     for paragraph in paragraphs:
+        # Check if all keywords are present in the paragraph (case-insensitive)
         if all(keyword.lower() in paragraph.lower() for keyword in keywords):
-            matching_paragraphs.append(paragraph)
+            matching_paragraphs.append(paragraph.strip())  # Strip whitespace and add to list
+    # Remove duplicate paragraphs
+    unique_paragraphs = list(set(matching_paragraphs))
     # Sort paragraphs by length (shortest first)
-    matching_paragraphs.sort(key=len)
-    return matching_paragraphs
+    unique_paragraphs.sort(key=len)
+    return unique_paragraphs
 
 ### function to clear text
 def clear_text():
@@ -72,7 +75,7 @@ def main():
                 st.button("clear text input", on_click=clear_text)
                 
             else:
-                st.warning("")
+                st.warning("Text Box Empty!")
 
     with col2:
         if st.session_state.get("show_confirmation", False):
@@ -96,12 +99,13 @@ def main():
     st.subheader("Search for Information")
 
     # Smaller text box for user to enter keywords
-    keywords = st.text_input("Enter keywords to search (comma-separated):")
+    search_phrase = st.text_input("Enter keywords to search (separated by spaces):")
 
     # Button to execute the search
     if st.button("Search"):
-        if keywords:
-            keyword_list = [keyword.strip() for keyword in keywords.split(",")]
+        if search_phrase:
+            # Split the search phrase into individual words
+            keyword_list = search_phrase.strip().split()
             matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
             if matching_paragraphs:
                 st.subheader("Matching Paragraphs:")

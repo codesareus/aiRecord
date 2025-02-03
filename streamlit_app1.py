@@ -1,13 +1,6 @@
-import streamlit as st
-from gtts import gTTS
-from langdetect import detect
+### airecord
 
-# No need to delete the file, just overwrite it
-def speak_text(text):
-    lang = detect_language(text)  # Detect the language of the text
-    tts = gTTS(text=text, lang=lang)
-    tts.save("output.mp3")  # Overwrite the same file
-    st.session_state.audio_file = "output.mp3"
+import streamlit as st
 
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
@@ -35,24 +28,6 @@ def search_keywords_in_file(keywords, file_content):
 def clear_text():
     st.session_state["text_area"] = ""
 
-# Function to detect language
-def detect_language(text):
-    try:
-        lang = detect(text)
-        if lang == "zh-cn" or lang == "zh-tw":
-            return "zh"  # Chinese
-        else:
-            return "en"  # Default to English
-    except:
-        return "en"  # Fallback to English if detection fails
-
-# Function to convert text to speech and play it
-def speak_text(text):
-    lang = detect_language(text)  # Detect the language of the text
-    tts = gTTS(text=text, lang=lang)
-    tts.save("output.mp3")
-    st.session_state.audio_file = "output.mp3"
-
 # Streamlit app
 def main():
     st.title("AI Record App")
@@ -69,12 +44,6 @@ def main():
     if "text_area_content" not in st.session_state:
         st.session_state.text_area_content = ""
 
-    # Initialize session state for search results and audio file
-    if "matching_paragraphs" not in st.session_state:
-        st.session_state.matching_paragraphs = []
-    if "audio_file" not in st.session_state:
-        st.session_state.audio_file = None
-
     # Input box for user to enter text
     user_text = st.text_area(
         "Enter your text (max 2000 characters):",
@@ -83,6 +52,7 @@ def main():
         key="text_area"
     )
 
+    
     # Secret key input box (moved below the text window)
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
 
@@ -106,10 +76,12 @@ def main():
             else:  # If the text contains only spaces
                 st.warning("Only spaces present!")
 
+
     with col2:
         if st.session_state.get("show_confirmation", False):
             st.success("Text saved successfully!")
             st.session_state.show_confirmation = False  # Reset the confirmation message
+
 
     # Download button for the saved file
     if st.button("Download Saved File"):
@@ -122,7 +94,7 @@ def main():
             )
         else:
             st.error("No file found to download. Please save some text first.")
-
+   
     # Add a subtitle for the search functionality
     st.subheader("Search for Information")
 
@@ -134,27 +106,16 @@ def main():
         if search_phrase:
             # Split the search phrase into individual words
             keyword_list = search_phrase.strip().split()
-            st.session_state.matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            if matching_paragraphs:
+                st.subheader("Matching Paragraphs:")
+                for paragraph in matching_paragraphs:
+                    st.write(paragraph)
+                    st.write("")  # Add an empty line between paragraphs
+            else:
+                st.warning("No matching paragraphs found.")
         else:
             st.warning("Please enter keywords to search.")
-
-    # Display matching paragraphs
-    if st.session_state.matching_paragraphs:
-        st.subheader("Matching Paragraphs:")
-        for paragraph in st.session_state.matching_paragraphs:
-            st.write(paragraph)
-            st.write("")  # Add an empty line between paragraphs
-
-        # Add a button to speak the found text
-        if st.button("Speak Found Text"):
-            combined_text = "\n".join(st.session_state.matching_paragraphs)
-            speak_text(combined_text)
-
-    # Play audio if an audio file exists in session state
-    # In the main function, no need to delete the file
-    if st.session_state.audio_file:
-        st.audio(st.session_state.audio_file, format="audio/mp3")
-        st.session_state.audio_file = None  # Reset the audio file in session state
 
 if __name__ == "__main__":
     main()

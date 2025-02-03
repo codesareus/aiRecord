@@ -67,15 +67,15 @@ def main():
 
     with col1:
         if st.button("Save Text", disabled=save_button_disabled):
-            if user_text:
+            if user_text.strip():  # Check if the text is not empty or only spaces
                 save_text_to_file(user_text)
-                #st.session_state.text_area_content = ""  # Clear the text area
                 st.session_state.show_confirmation = True  # Show confirmation message
-                #st.experimental_rerun()  # Force a rerun to update the UI
                 st.button("clear text input", on_click=clear_text)
-                
-            else:
+            elif not user_text:  # Check if the text is empty
                 st.warning("Text Box Empty!")
+            else:  # If the text contains only spaces
+                st.warning("Only spaces present!")
+
 
     with col2:
         if st.session_state.get("show_confirmation", False):

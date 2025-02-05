@@ -1,18 +1,10 @@
 import streamlit as st
 from gtts import gTTS
-from langdetect import detect
-
-# No need to delete the file, just overwrite it
-def speak_text(text):
-    lang = detect_language(text)  # Detect the language of the text
-    tts = gTTS(text=text, lang=lang)
-    tts.save("output.mp3")  # Overwrite the same file
-    st.session_state.audio_file = "output.mp3"
 
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
     with open(filename, "a") as file:
-        file.write(text + "\n\n")  # Add an extra newline to separate paragraphs
+        file.write("\n\n" + text)  # Add an extra newline to separate paragraphs
     # Update the session state with the new content
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
@@ -45,13 +37,6 @@ def detect_language(text):
             return "en"  # Default to English
     except:
         return "en"  # Fallback to English if detection fails
-
-# Function to convert text to speech and play it
-def speak_text(text):
-    lang = detect_language(text)  # Detect the language of the text
-    tts = gTTS(text=text, lang=lang)
-    tts.save("output.mp3")
-    st.session_state.audio_file = "output.mp3"
 
 # Streamlit app
 def main():
@@ -145,16 +130,6 @@ def main():
             st.write(paragraph)
             st.write("")  # Add an empty line between paragraphs
 
-        # Add a button to speak the found text
-        if st.button("Speak Found Text"):
-            combined_text = "\n".join(st.session_state.matching_paragraphs)
-            speak_text(combined_text)
-
-    # Play audio if an audio file exists in session state
-    # In the main function, no need to delete the file
-    if st.session_state.audio_file:
-        st.audio(st.session_state.audio_file, format="audio/mp3")
-        st.session_state.audio_file = None  # Reset the audio file in session state
 
 if __name__ == "__main__":
     main()

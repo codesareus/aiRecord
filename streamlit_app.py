@@ -54,9 +54,41 @@ def sort_paragraphs(paragraphs):
     # Sort first by timestamp, then by length
     return sorted(paragraphs, key=lambda x: (extract_timestamp(x) or datetime.min, len(x)))
 
-### function to clear text
+# Function to clear text
 def clear_text():
     st.session_state["text_area"] = ""
+
+# Function to remove duplicate paragraphs
+def remove_duplicate_paragraphs(filename="aiRecord.txt"):
+    with open(filename, "r") as file:
+        paragraphs = file.read().split("\n\n")
+    unique_paragraphs = list(set(paragraphs))
+    with open(filename, "w") as file:
+        file.write("\n\n".join(unique_paragraphs))
+
+# Function to save keyword list to a file (append mode)
+def save_keyword_list(keywords, filename="keywords.txt"):
+    existing_keywords = set()
+    try:
+        with open(filename, "r") as file:
+            existing_keywords = set(file.read().splitlines())
+    except FileNotFoundError:
+        pass  # If the file doesn't exist, we'll create it
+
+    # Add new keywords to the existing set
+    existing_keywords.update(keywords)
+
+    # Write all keywords back to the file
+    with open(filename, "w") as file:
+        file.write("\n".join(existing_keywords))
+
+# Function to load keyword list from a file
+def load_keyword_list(filename="keywords.txt"):
+    try:
+        with open(filename, "r") as file:
+            return file.read().splitlines()
+    except FileNotFoundError:
+        return []
 
 # Streamlit app
 def main():
@@ -79,6 +111,31 @@ def main():
         st.session_state.matching_paragraphs = []
     if "audio_file" not in st.session_state:
         st.session_state.audio_file = None
+
+    # Left side panel for keyword list input
+    with st.sidebar:
+        st.subheader("Keyword List")
+        keyword_input = st.text_area("Enter keywords (one per line):", height=150)
+        if st.button("Save Keywords"):
+            if keyword_input.strip():
+                keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
+                save_keyword_list(keywords)
+                st.success("Keywords saved successfully!")
+                # Reload the keyword list to update the buttons
+                st.session_state.keyword_list = load_keyword_list()
+            else:
+                st.warning("No keywords entered!")
+
+        # Load keyword list at app restart
+        if "keyword_list" not in st.session_state:
+            st.session_state.keyword_list = load_keyword_list()
+
+        # Display saved keywords as buttons
+        st.subheader("Saved Keywords")
+        for keyword in st.session_state.keyword_list:
+            if st.button(keyword):
+                st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
+                st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
 
     # Input box for user to enter text
     user_text = st.text_area(
@@ -150,7 +207,6 @@ def main():
         for paragraph in st.session_state.matching_paragraphs:
             st.write(paragraph)
             st.write("")  # Add an empty line between paragraphs
-
 
 if __name__ == "__main__":
     main()

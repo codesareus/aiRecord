@@ -1,10 +1,16 @@
 import streamlit as st
 from gtts import gTTS
+from datetime import datetime
 
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
+    paragraphs = text.split("\n")
     with open(filename, "a") as file:
-        file.write("\n\n" + text)  # Add an extra newline to separate paragraphs
+        for paragraph in paragraphs:
+            if paragraph.strip():  # Check if the paragraph is not empty
+                timestamp = datetime.now().strftime("%Y:%m:%d")
+                paragraph_with_timestamp = f"{paragraph} [{timestamp}]"
+                file.write("\n\n" + paragraph_with_timestamp)
     # Update the session state with the new content
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
@@ -14,29 +20,43 @@ def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
     paragraphs = file_content.split("\n\n")  # Split text into paragraphs
     for paragraph in paragraphs:
-        # Check if all keywords are present in the paragraph (case-insensitive)
         if all(keyword.lower() in paragraph.lower() for keyword in keywords):
-            matching_paragraphs.append(paragraph.strip())  # Strip whitespace and add to list
-    # Remove duplicate paragraphs
-    unique_paragraphs = list(set(matching_paragraphs))
-    # Sort paragraphs by length (shortest first)
-    unique_paragraphs.sort(key=len)
-    return unique_paragraphs
+            matching_paragraphs.append(paragraph.strip())
+    return matching_paragraphs
+
+# Function to extract timestamp from a paragraph
+def extract_timestamp(paragraph):
+    # Extract the timestamp from the end of the paragraph
+    if "[" in paragraph and "]" in paragraph:
+        timestamp_str = paragraph[paragraph.rfind("[") + 1 : paragraph.rfind("]")]
+        try:
+            return datetime.strptime(timestamp_str, "%Y:%m:%d")
+        except ValueError:
+            return None
+    return None
+
+# Function to add today's timestamp to paragraphs without one
+def add_timestamp_to_paragraphs(paragraphs):
+    updated_paragraphs = []
+    for paragraph in paragraphs:
+        if extract_timestamp(paragraph) is None:  # If no timestamp exists
+            timestamp = datetime.now().strftime("%Y:%m:%d")
+            updated_paragraph = f"{paragraph} [{timestamp}]"
+            updated_paragraphs.append(updated_paragraph)
+        else:
+            updated_paragraphs.append(paragraph)
+    return updated_paragraphs
+
+# Function to sort paragraphs by timestamp and then by length
+def sort_paragraphs(paragraphs):
+    # Add timestamps to paragraphs without one
+    paragraphs = add_timestamp_to_paragraphs(paragraphs)
+    # Sort first by timestamp, then by length
+    return sorted(paragraphs, key=lambda x: (extract_timestamp(x) or datetime.min, len(x)))
 
 ### function to clear text
 def clear_text():
     st.session_state["text_area"] = ""
-
-# Function to detect language
-def detect_language(text):
-    try:
-        lang = detect(text)
-        if lang == "zh-cn" or lang == "zh-tw":
-            return "zh"  # Chinese
-        else:
-            return "en"  # Default to English
-    except:
-        return "en"  # Fallback to English if detection fails
 
 # Streamlit app
 def main():
@@ -48,7 +68,7 @@ def main():
             with open("aiRecord.txt", "r") as file:
                 st.session_state.file_content = file.read()
         except FileNotFoundError:
-            st.session_state.file_content = ""  # Initialize with empty content if file doesn't exist
+            st.session_state.file_content = ""
 
     # Initialize session state for text area content
     if "text_area_content" not in st.session_state:
@@ -78,23 +98,23 @@ def main():
         save_button_disabled = True
 
     # Use columns to place the Save Text button and confirmation message side by side
-    col1, col2 = st.columns([1, 3])  # Adjust the ratio as needed
+    col1, col2 = st.columns([1, 3])
 
     with col1:
         if st.button("Save Text", disabled=save_button_disabled):
-            if user_text.strip():  # Check if the text is not empty or only spaces
+            if user_text.strip():
                 save_text_to_file(user_text)
-                st.session_state.show_confirmation = True  # Show confirmation message
+                st.session_state.show_confirmation = True
                 st.button("clear text input", on_click=clear_text)
-            elif not user_text:  # Check if the text is empty
+            elif not user_text:
                 st.warning("Text Box Empty!")
-            else:  # If the text contains only spaces
+            else:
                 st.warning("Only spaces present!")
 
     with col2:
         if st.session_state.get("show_confirmation", False):
             st.success("Text saved successfully!")
-            st.session_state.show_confirmation = False  # Reset the confirmation message
+            st.session_state.show_confirmation = False
 
     # Download button for the saved file
     if st.button("Download Saved File"):
@@ -117,15 +137,16 @@ def main():
     # Button to execute the search
     if st.button("Search"):
         if search_phrase:
-            # Split the search phrase into individual words
             keyword_list = search_phrase.strip().split()
-            st.session_state.matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            # Sort the matching paragraphs by timestamp and then by length
+            st.session_state.matching_paragraphs = sort_paragraphs(matching_paragraphs)
         else:
             st.warning("Please enter keywords to search.")
 
-    # Display matching paragraphs
+    # Display matching paragraphs sorted by timestamp and length
     if st.session_state.matching_paragraphs:
-        st.subheader("Matching Paragraphs:")
+        st.subheader("Matching Paragraphs (Sorted by Timestamp and Length):")
         for paragraph in st.session_state.matching_paragraphs:
             st.write(paragraph)
             st.write("")  # Add an empty line between paragraphs

@@ -45,6 +45,7 @@ def add_timestamp_to_paragraphs(paragraphs):
     for paragraph in paragraphs:
         if extract_timestamp(paragraph) is None:  # If no timestamp exists
             timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
+            timestamp = "2025:00:00"
             updated_paragraph = f"{paragraph} [{timestamp}]"
             updated_paragraphs.append(updated_paragraph)
         else:
@@ -56,7 +57,7 @@ def sort_paragraphs(paragraphs):
     # Add timestamps to paragraphs without one
     paragraphs = add_timestamp_to_paragraphs(paragraphs)
     # Sort first by timestamp, then by length
-    return sorted(paragraphs, key=lambda x: (extract_timestamp(x) or datetime.min, len(x)))
+    return sorted(paragraphs, key=lambda x: (extract_timestamp(x) or datetime.min, len(x)), reverse=True)
 
 # Function to clear text
 def clear_text():

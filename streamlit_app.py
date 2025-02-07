@@ -1,14 +1,18 @@
 import streamlit as st
 from gtts import gTTS
 from datetime import datetime
+import pytz
 
+midwest = pytz.timezone("America/chicago")
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
     paragraphs = text.split("\n")
     with open(filename, "a") as file:
         for paragraph in paragraphs:
             if paragraph.strip():  # Check if the paragraph is not empty
-                timestamp = datetime.now().strftime("%Y:%m:%d")
+                ### use midwest time
+                
+                timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
                 paragraph_with_timestamp = f"{paragraph} [{timestamp}]"
                 file.write("\n\n" + paragraph_with_timestamp)
     # Update the session state with the new content
@@ -40,7 +44,7 @@ def add_timestamp_to_paragraphs(paragraphs):
     updated_paragraphs = []
     for paragraph in paragraphs:
         if extract_timestamp(paragraph) is None:  # If no timestamp exists
-            timestamp = datetime.now().strftime("%Y:%m:%d")
+            timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
             updated_paragraph = f"{paragraph} [{timestamp}]"
             updated_paragraphs.append(updated_paragraph)
         else:

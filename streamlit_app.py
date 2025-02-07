@@ -161,7 +161,7 @@ def main():
             if user_text.strip():
                 save_text_to_file(user_text)
                 st.session_state.show_confirmation = True
-                st.button("clear text input", on_click=clear_text)
+                
             elif not user_text:
                 st.warning("Text Box Empty!")
             else:
@@ -171,7 +171,7 @@ def main():
         if st.session_state.get("show_confirmation", False):
             st.success("Text saved successfully!")
             st.session_state.show_confirmation = False
-
+    
     # Download button for the saved file
     if st.button("Download Saved File"):
         if st.session_state.file_content:
@@ -183,6 +183,9 @@ def main():
             )
         else:
             st.error("No file found to download. Please save some text first.")
+
+    # clear text button
+    st.button("clear text input", on_click=clear_text)
 
     # Add a subtitle for the search functionality
     st.subheader("Search for Information")

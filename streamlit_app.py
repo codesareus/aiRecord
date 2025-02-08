@@ -2,29 +2,32 @@ import streamlit as st
 from gtts import gTTS
 from datetime import datetime, timedelta
 import pytz
+import re  # Import regex
 
 midwest = pytz.timezone("America/Chicago")
 
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
-    paragraphs = text.split("\n")
-    with open(filename, "a") as file:
-        for paragraph in paragraphs:
-            if paragraph.strip():  # Check if the paragraph is not empty
-                timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
-                paragraph_with_timestamp = f"{paragraph} [{timestamp}]"
-                file.write("\n\n" + paragraph_with_timestamp)
-    # Update the session state with the new content
+    if text.strip():  # Check if the text is not empty
+        timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
+        text_with_timestamp = f"{{{text}}} [{timestamp}]"
+        with open(filename, "a") as file:
+            file.write("\n\n" + text_with_timestamp)
+
+    # Update session state with new content
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
 
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
-    paragraphs = file_content.split("\n\n")  # Split text into paragraphs
+    paragraphs = re.findall(r'\{(.*?)\}', file_content, re.DOTALL)
+
     for paragraph in paragraphs:
-        if all(keyword.lower() in paragraph.lower() for keyword in keywords):
+        content_lower = " ".join(paragraph.lower().split())
+        if all(kw.lower() in content_lower for kw in keywords):
             matching_paragraphs.append(paragraph.strip())
+
     return matching_paragraphs
 
 # Function to extract timestamp from a paragraph
@@ -32,44 +35,23 @@ def extract_timestamp(paragraph):
     if "[" in paragraph and "]" in paragraph:
         timestamp_str = paragraph[paragraph.rfind("[") + 1 : paragraph.rfind("]")]
         try:
-            return datetime.strptime(timestamp_str, "%Y:%m:%d")
+            return datetime.strptime(timestamp_str.strip(), "%Y:%m:%d")
         except ValueError:
             return None
     return None
 
-# Function to add today's timestamp to paragraphs without one
-def add_timestamp_to_paragraphs(paragraphs):
-    updated_paragraphs = []
-    for paragraph in paragraphs:
-        if extract_timestamp(paragraph) is None:  # If no timestamp exists
-            timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
-            updated_paragraph = f"{paragraph} [{timestamp}]"
-            updated_paragraphs.append(updated_paragraph)
-        else:
-            updated_paragraphs.append(paragraph)
-    return updated_paragraphs
-
-# Function to sort paragraphs by timestamp and then by length
+# Function to sort paragraphs by timestamp and length
 def sort_paragraphs(paragraphs):
-    paragraphs = add_timestamp_to_paragraphs(paragraphs)
-    return sorted(paragraphs, key=lambda x: (extract_timestamp(x) or datetime.min, len(x)), reverse=True)
+    sorted_paragraphs = []
+    for paragraph in paragraphs:
+        timestamp = extract_timestamp(paragraph) or datetime.min
+        sorted_paragraphs.append((timestamp, paragraph))
+    sorted_paragraphs.sort(key=lambda x: (x[0], len(x[1])), reverse=True)
+    return [p for _, p in sorted_paragraphs]
 
-# Function to clear text
+# Function to clear text input
 def clear_text():
     st.session_state["text_area"] = ""
-
-# Function to remove duplicate paragraphs
-def remove_duplicate_paragraphs(filename="aiRecord.txt"):
-    with open(filename, "r") as file:
-        paragraphs = file.read().split("\n\n")
-    unique_paragraphs = list(set(paragraphs))
-    with open(filename, "w") as file:
-        file.write("\n\n".join(unique_paragraphs))
-
-# Function to save keyword list to a file (overwrite mode)
-def save_keyword_list(keywords, filename="keywords.txt"):
-    with open(filename, "w") as file:
-        file.write("\n".join(keywords))
 
 # Function to load keyword list from a file
 def load_keyword_list(filename="keywords.txt"):
@@ -79,7 +61,7 @@ def load_keyword_list(filename="keywords.txt"):
     except FileNotFoundError:
         return []
 
-# Function to get paragraphs with a specific date's timestamp
+# Function to get paragraphs by date
 def get_paragraphs_by_date(file_content, target_date):
     paragraphs = file_content.split("\n\n")
     matching_paragraphs = []
@@ -101,21 +83,15 @@ def main():
         except FileNotFoundError:
             st.session_state.file_content = ""
 
-    # Initialize session state for text area content
+    # Initialize other session states
     if "text_area_content" not in st.session_state:
         st.session_state.text_area_content = ""
-
-    # Initialize session state for search results and audio file
     if "matching_paragraphs" not in st.session_state:
         st.session_state.matching_paragraphs = []
-    if "audio_file" not in st.session_state:
-        st.session_state.audio_file = None
-
-    # Load keyword list at app restart
     if "keyword_list" not in st.session_state:
         st.session_state.keyword_list = load_keyword_list()
 
-    # Left side panel for keyword list input
+    # Sidebar for keyword management
     with st.sidebar:
         st.subheader("Keyword List")
         keyword_input = st.text_area(
@@ -125,21 +101,20 @@ def main():
         )
 
         if st.button("Save Keywords"):
-            if keyword_input.strip():
-                keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
-                save_keyword_list(keywords)
-                st.success("Keywords saved successfully!")
-                st.session_state.keyword_list = keywords
-            else:
-                st.warning("No keywords entered!")
+            keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
+            with open("keywords.txt", "w") as file:
+                file.write("\n".join(keywords))
+            st.session_state.keyword_list = keywords
+            st.success("Keywords saved successfully!")
 
         st.subheader("Saved Keywords")
         for keyword in st.session_state.keyword_list:
             if st.button(keyword):
                 st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
                 st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
+                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
 
-    # Input box for user to enter text
+    # Text input area
     user_text = st.text_area(
         "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
@@ -147,31 +122,24 @@ def main():
         key="text_area"
     )
 
-    # Secret key input box
+    # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
-
-    # Save button (disabled if secret key is incorrect)
     save_button_disabled = secret_key != "zzzzzzzzz"
 
-    # Use columns to place the Save Text button and confirmation message side by side
-    col1, col2 = st.columns([1, 3])
+    # Save text button
+    if st.button("Save Text", disabled=save_button_disabled):
+        if user_text.strip():
+            save_text_to_file(user_text)
+            st.session_state.show_confirmation = True
+            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+        else:
+            st.warning("Text Box Empty!")
 
-    with col1:
-        if st.button("Save Text", disabled=save_button_disabled):
-            if user_text.strip():
-                save_text_to_file(user_text)
-                st.session_state.show_confirmation = True
-            elif not user_text:
-                st.warning("Text Box Empty!")
-            else:
-                st.warning("Only spaces present!")
+    if st.session_state.get("show_confirmation", False):
+        st.success("Text saved successfully!")
+        st.session_state.show_confirmation = False
 
-    with col2:
-        if st.session_state.get("show_confirmation", False):
-            st.success("Text saved successfully!")
-            st.session_state.show_confirmation = False
-    
-    # Download button for the saved file
+    # Download button
     if st.button("Download Saved File"):
         if st.session_state.file_content:
             st.download_button(
@@ -181,47 +149,55 @@ def main():
                 mime="text/plain"
             )
         else:
-            st.error("No file found to download. Please save some text first.")
+            st.error("No file found to download.")
 
     # Clear text button
     st.button("Clear Text Input", on_click=clear_text)
 
-    # Add a subtitle for the search functionality
+    # Search functionality
     st.subheader("Search for Information")
-
-    # Smaller text box for user to enter keywords
     search_phrase = st.text_input("Enter keywords to search (separated by spaces):")
 
-    # Button to execute the search
     if st.button("Search"):
         if search_phrase:
             keyword_list = search_phrase.strip().split()
-            matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
-            st.session_state.matching_paragraphs = sort_paragraphs(matching_paragraphs)
+            st.session_state.matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
         else:
             st.warning("Please enter keywords to search.")
 
-    # Buttons for ytDay, toDay, and Copy
+    # ytDay and toDay buttons
     col1, col2 = st.columns(2)
     with col1:
         if st.button("ytDay"):
-            yesterday = datetime.now(midwest) - timedelta(days=1)
-            st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, yesterday)
+            if st.session_state.file_content:
+                yesterday = datetime.now(midwest) - timedelta(days=1)
+                st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, yesterday)
+                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+            else:
+                st.warning("No file content available.")
+
     with col2:
         if st.button("toDay"):
-            today = datetime.now(midwest)
-            st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-    
+            if st.session_state.file_content:
+                today = datetime.now(midwest)
+                st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
+                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+            else:
+                st.warning("No file content available.")
 
-    # Display matching paragraphs in an editable text area
+    # Display matching paragraphs
     if st.session_state.matching_paragraphs:
-        st.subheader("Matching Paragraphs (Sorted by Timestamp and Length):")
+        st.subheader("Matching Paragraphs:")
         editable_paragraphs = "\n\n".join(st.session_state.matching_paragraphs)
         edited_paragraphs = st.text_area("Edit Matching Paragraphs:", value=editable_paragraphs, height=300)
 
+        # Copy button
         if st.button("Copy"):
             st.write("Copied to clipboard!")
             st.code(edited_paragraphs)
+    else:
+        st.warning("No matching paragraphs found.")
 
 if __name__ == "__main__":
     main()

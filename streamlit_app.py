@@ -139,6 +139,7 @@ def main():
 
     if st.session_state.get("show_confirmation", False):
         st.success("Text saved successfully!")
+        st.button("ClearInput", on_click=clear_text)
         st.session_state.show_confirmation = False
 
     # Download button
@@ -152,9 +153,6 @@ def main():
             )
         else:
             st.error("No file found to download.")
-
-    # Clear text button
-    st.button("Clear Text Input", on_click=clear_text)
 
     # Search functionality
     st.subheader("Search for Information")

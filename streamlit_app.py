@@ -21,13 +21,11 @@ def save_text_to_file(text, filename="aiRecord.txt"):
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
-    paragraphs = re.findall(r'\{(.*?)\}', file_content, re.DOTALL)
-
-    for paragraph in paragraphs:
-        content_lower = " ".join(paragraph.lower().split())
+    matches = re.findall(r'(\{.*?\})\s*(\[\d{4}:\d{2}:\d{2}\])', file_content, re.DOTALL)
+    for content, timestamp in matches:
+        content_lower = " ".join(content.lower().split())
         if all(kw.lower() in content_lower for kw in keywords):
-            matching_paragraphs.append(paragraph.strip())
-
+            matching_paragraphs.append(f"{content} {timestamp}")
     return matching_paragraphs
 
 # Function to extract timestamp from a paragraph

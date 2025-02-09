@@ -61,14 +61,17 @@ def load_keyword_list(filename="keywords.txt"):
     except FileNotFoundError:
         return []
 
-# Function to get paragraphs by date
+
+# Function to get paragraphs by date with trimmed content
 def get_paragraphs_by_date(file_content, target_date):
     paragraphs = file_content.split("\n\n")
     matching_paragraphs = []
     for paragraph in paragraphs:
         timestamp = extract_timestamp(paragraph)
         if timestamp and timestamp.date() == target_date.date():
-            matching_paragraphs.append(paragraph)
+            trimmed_text = paragraph[-30:]  # Get only the last 20 characters
+            trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
+            matching_paragraphs.append(f"......{trimmed_text}......")
     return matching_paragraphs
 
 # Streamlit app
@@ -119,7 +122,8 @@ def main():
         "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
         max_chars=2000,
-        key="text_area"
+        key="text_area",
+        height=300
     )
 
     # Secret key input

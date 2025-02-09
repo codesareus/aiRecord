@@ -91,6 +91,8 @@ def main():
         st.session_state.matching_paragraphs = []
     if "keyword_list" not in st.session_state:
         st.session_state.keyword_list = load_keyword_list()
+    if "search_phrase" not in st.session_state:
+        st.session_state.search_phrase = ""
 
     # Sidebar for keyword management
     with st.sidebar:
@@ -111,6 +113,7 @@ def main():
         st.subheader("Saved Keywords")
         for keyword in st.session_state.keyword_list:
             if st.button(keyword):
+                st.session_state.search_phrase = keyword
                 st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
                 st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
                 st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
@@ -156,12 +159,16 @@ def main():
 
     # Search functionality
     st.subheader("Search for Information")
-    search_phrase = st.text_input("Enter keywords to search (separated by spaces):")
+    search_phrase = st.text_input(
+        "Enter keywords to search (separated by spaces):",
+        value=st.session_state.search_phrase
+    )
 
     if st.button("Search"):
         if search_phrase:
             keyword_list = search_phrase.strip().split()
             st.session_state.matching_paragraphs = search_keywords_in_file(keyword_list, st.session_state.file_content)
+            st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
         else:
             st.warning("Please enter keywords to search.")

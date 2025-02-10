@@ -174,8 +174,12 @@ def main():
         else:
             st.warning("Please enter keywords to search.")
 
+    # Initialize session state for expand/collapse
+    if "expand_all" not in st.session_state:
+        st.session_state.expand_all = False  # Default: collapsed
+        
     # ytDay and toDay buttons
-    col1, col2 = st.columns(2)
+    col1, col2, col3= st.columns(3)
     with col1:
         if st.button("ytDay"):
             if st.session_state.file_content:
@@ -194,18 +198,38 @@ def main():
             else:
                 st.warning("No file content available.")
 
+    # Button to toggle expand/collapse state
+    with col3:
+        if st.button("Expand All" if not st.session_state.expand_all else "Collapse All"):
+            st.session_state.expand_all = not st.session_state.expand_all  # Toggle state
+            st.rerun()  # Refresh the UI
+
     # Display matching paragraphs
     if st.session_state.matching_paragraphs:
         st.subheader("Matching Paragraphs:")
-        editable_paragraphs = "\n\n".join(st.session_state.matching_paragraphs)
-        edited_paragraphs = st.text_area("Edit Matching Paragraphs:", value=editable_paragraphs, height=300)
 
-        # Copy button
-        if st.button("Copy"):
-            st.write("Copied to clipboard!")
-            st.code(edited_paragraphs)
+        if st.session_state.expand_all:
+            # Show all paragraphs as a single block for easy copying
+            full_text = "\n\n".join(st.session_state.matching_paragraphs)
+            edited_paragraphs = st.text_area("Expanded Paragraphs:", value=full_text, height=300)
+
+            # Copy button
+            if st.button("Copy"):
+                st.write("Copied to clipboard!")
+                st.code(edited_paragraphs)
+
+        else:
+            # Show each paragraph as an expandable block
+            for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
+                truncated_text = f"......{paragraph[-30:]}......"  # Show only the last 30 characters
+                with st.expander(truncated_text):
+                    st.write(paragraph)  # Show full text when expanded
+
     else:
         st.warning("No matching paragraphs found.")
+
+
+
 
 if __name__ == "__main__":
     main()

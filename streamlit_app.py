@@ -23,12 +23,26 @@ def save_text_to_file(text, filename="aiRecord.txt"):
 def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
     matches = re.findall(r'(\{.*?\})\s*(\[\d{4}:\d{2}:\d{2}\])', file_content, re.DOTALL)
+    
     for content, timestamp in matches:
         content_lower = " ".join(content.lower().split())
         if all(kw.lower() in content_lower for kw in keywords):
-            matching_paragraphs.append(f"{content} {timestamp}")
-    return matching_paragraphs
+            highlighted_content = content  # Copy content for modification
+            
+            # Change highlight color
+            highlight_color = "#efd06c"  # Change this to match your theme
 
+            for kw in keywords:
+                highlighted_content = re.sub(
+                    rf"({re.escape(kw)})",
+                    rf'<span style="background-color: {highlight_color}; color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px;">\1</span>',
+                    highlighted_content,
+                    flags=re.IGNORECASE
+                )
+
+            matching_paragraphs.append(f"{highlighted_content} {timestamp}")
+
+    return matching_paragraphs
 # Function to extract timestamp from a paragraph
 def extract_timestamp(paragraph):
     if "[" in paragraph and "]" in paragraph:
@@ -209,26 +223,25 @@ def main():
         st.subheader("Matching Paragraphs:")
 
         if st.session_state.expand_all:
-            # Show all paragraphs as a single block for easy copying
-            full_text = "\n\n".join(st.session_state.matching_paragraphs)
-            edited_paragraphs = st.text_area("Expanded Paragraphs:", value=full_text, height=300)
+            # Show all paragraphs as a single block for easy copying (preserving highlights)
+            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+            st.markdown(full_text, unsafe_allow_html=True)
 
-            # Copy button
+            # Copy button (removes HTML tags before copying)
             if st.button("Copy"):
+                plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
+                st.code(plain_text)
                 st.write("Copied to clipboard!")
-                st.code(edited_paragraphs)
 
         else:
-            # Show each paragraph as an expandable block
+            # Show each paragraph as an expandable block with highlighting
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
                 truncated_text = f"......{paragraph[-50:]}"  # Show only the last 30 characters
                 with st.expander(truncated_text):
-                    st.write(paragraph)  # Show full text when expanded
+                    st.markdown(paragraph) 
 
     else:
         st.warning("No matching paragraphs found.")
-
-
 
 
 if __name__ == "__main__":

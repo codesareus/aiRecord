@@ -10,7 +10,8 @@ midwest = pytz.timezone("America/Chicago")
 def save_text_to_file(text, filename="aiRecord.txt"):
     if text.strip():  # Check if the text is not empty
         timestamp = datetime.now(midwest).strftime("%Y:%m:%d")
-        text_with_timestamp = f"{{{text}}} [{timestamp}]"
+        timestp = datetime.now(midwest).strftime("%Y-%m-%d: ")
+        text_with_timestamp = "{" + timestp + f" {text}" + "}" +  f"[{timestamp}]"
         with open(filename, "a") as file:
             file.write("\n\n" + text_with_timestamp)
 

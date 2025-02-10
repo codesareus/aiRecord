@@ -191,35 +191,35 @@ def main():
     # Initialize session state for expand/collapse
     if "expand_all" not in st.session_state:
         st.session_state.expand_all = False  # Default: collapsed
-        
+
     # ytDay and toDay buttons
-    col1, col2, col3= st.columns(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("ytDay"):
-            if st.session_state.file_content:
+            if st.session_state.get("file_content"):
                 yesterday = datetime.now(midwest) - timedelta(days=1)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, yesterday)
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("No file content available.")
 
     with col2:
         if st.button("toDay"):
-            if st.session_state.file_content:
+            if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("No file content available.")
 
     # Button to toggle expand/collapse state
     with col3:
         if st.button("Expand All" if not st.session_state.expand_all else "Collapse All"):
-            st.session_state.expand_all = not st.session_state.expand_all  # Toggle state
-            st.rerun()  # Refresh the UI
+            st.session_state.expand_all = not st.session_state.expand_all
+            st.rerun()
 
     # Display matching paragraphs
-    if st.session_state.matching_paragraphs:
+    if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
         if st.session_state.expand_all:
@@ -234,11 +234,14 @@ def main():
                 st.write("Copied to clipboard!")
 
         else:
-            # Show each paragraph as an expandable block with highlighting
+            # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
-                truncated_text = f"......{paragraph[-50:]}"  # Show only the last 30 characters
+                truncated_text = f"......{paragraph[-50:]}"  # Show only the last 50 characters
+
                 with st.expander(truncated_text):
-                    st.markdown(paragraph) 
+                    # Ensure highlights work when expanded
+                    cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
+                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:
         st.warning("No matching paragraphs found.")

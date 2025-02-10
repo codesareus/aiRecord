@@ -63,14 +63,14 @@ def load_keyword_list(filename="keywords.txt"):
 
 # Function to get paragraphs by date with trimmed content
 def get_paragraphs_by_date(file_content, target_date):
-    paragraphs = file_content.split("\n\n")
+    paragraphs = file_content.split("{")
     matching_paragraphs = []
     for paragraph in paragraphs:
         timestamp = extract_timestamp(paragraph)
         if timestamp and timestamp.date() == target_date.date():
-            trimmed_text = paragraph[-30:]  # Get only the last 20 characters
-            trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
-            matching_paragraphs.append(f"......{trimmed_text}......")
+            #trimmed_text = paragraph[-30:]  # Get only the last 20 characters
+            #trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
+            matching_paragraphs.append(paragraph)
     return matching_paragraphs
 
 # Streamlit app
@@ -221,7 +221,7 @@ def main():
         else:
             # Show each paragraph as an expandable block
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
-                truncated_text = f"......{paragraph[-30:]}......"  # Show only the last 30 characters
+                truncated_text = f"......{paragraph[-50:]}"  # Show only the last 30 characters
                 with st.expander(truncated_text):
                     st.write(paragraph)  # Show full text when expanded
 

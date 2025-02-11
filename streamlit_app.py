@@ -236,7 +236,7 @@ def main():
         else:
             # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
-                truncated_text = f"......{paragraph[-50:]}"  # Show only the last 50 characters
+                truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
 
                 with st.expander(truncated_text):
                     # Ensure highlights work when expanded

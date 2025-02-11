@@ -99,6 +99,9 @@ def sort_paragraphs(paragraphs):
 # Function to clear text input
 def clear_text():
     st.session_state["text_area"] = ""
+    st.session_state.text_saved = False  # Re-enable "Save Text"
+    st.session_state.show_confirmation = False
+    st.session_state.new_text_saved = False
 
 # Function to load keyword list from a file
 def load_keyword_list(filename="keywords.txt"):
@@ -193,37 +196,24 @@ def main():
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
     save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_saved
 
-    col_1, col_2 = st.columns(2)
-    with col_1:
-        # Save text button
-        if st.button("Save Text", disabled=save_button_disabled):
-            if user_text.strip():
-                save_text_to_file(user_text)
-                st.session_state.show_confirmation = True
-                st.session_state.new_text_saved = True  # Enable "Delete Last" after saving
-                st.session_state.text_saved = True  # Disable "Save Text" after saving
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-            else:
-                st.warning("Text Box Empty!")
+    # Save text button
+    if st.button("Save Text", disabled=save_button_disabled):
+        if user_text.strip():
+            save_text_to_file(user_text)
+            st.session_state.show_confirmation = True
+            st.session_state.new_text_saved = True  # Enable "Delete Last" after saving
+            st.session_state.text_saved = True  # Disable "Save Text" after saving
+            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+        else:
+            st.warning("Text Box Empty!")
                 
-        if st.session_state.get("show_confirmation", False):
-            st.success("Text saved successfully!")
-            st.button("ClearInput", on_click=clear_text)
-            st.session_state.show_confirmation = False
+    # Show confirmation message and ClearInput button
+    if st.session_state.get("show_confirmation", False):
+        st.success("Text saved successfully!")
+        st.button("ClearInput", on_click=clear_text)
+        st.session_state.show_confirmation = False
+
                 
-
-    with col_2:
-        # Button to delete last entry from saved file
-        delete_button_disabled = not st.session_state.new_text_saved 
-        if st.button("Delete Last", disabled=delete_button_disabled):
-            delete_last_entry()
-            st.rerun()  # Rerun the app to reflect the changes immediately
-
-        if st.session_state.get("show_deletion_confirmation", False):
-            st.success("Last entry deleted successfully!")
-            st.session_state.show_deletion_confirmation = False
-                
-
     # Download button
     if st.button("Download Saved File"):
         if st.session_state.file_content:

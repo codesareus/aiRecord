@@ -19,6 +19,39 @@ def save_text_to_file(text, filename="aiRecord.txt"):
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
 
+# Function to delete the last saved text entry
+def delete_last_entry():
+    try:
+        with open("aiRecord.txt", "r") as file:
+            lines = file.readlines()
+
+        if not lines:
+            st.warning("No entries to delete!")
+            return
+
+        # Reverse search for the last entry pattern
+        pattern = re.compile(r"^\{.*\}\[\d{4}:\d{1,2}:\d{1,2}\]$", re.DOTALL)
+        last_entry_start = None
+
+        for i in range(len(lines) - 1, -1, -1):
+            if pattern.match(lines[i].strip()):
+                last_entry_start = i
+                break
+        
+        if last_entry_start is not None:
+            # Remove the last entry
+            new_lines = lines[:last_entry_start]
+            with open("aiRecord.txt", "w") as file:
+                file.writelines(new_lines)
+
+            st.session_state.show_deletion_confirmation = True
+            st.session_state.new_text_saved = False
+        else:
+            st.warning("No valid entries found!")
+    
+    except FileNotFoundError:
+        st.warning("No saved entries found!")
+
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
@@ -43,6 +76,7 @@ def search_keywords_in_file(keywords, file_content):
             matching_paragraphs.append(f"{highlighted_content} {timestamp}")
 
     return matching_paragraphs
+
 # Function to extract timestamp from a paragraph
 def extract_timestamp(paragraph):
     if "[" in paragraph and "]" in paragraph:
@@ -109,6 +143,19 @@ def main():
     if "search_phrase" not in st.session_state:
         st.session_state.search_phrase = ""
 
+# Initialize session state variables
+    
+    if "show_confirmation" not in st.session_state:
+        st.session_state.show_confirmation = False
+    if "show_deletion_confirmation" not in st.session_state:
+        st.session_state.show_deletion_confirmation = False
+    if "new_text_saved" not in st.session_state:
+        st.session_state.new_text_saved = False  # Track if new text has been saved
+    if "text_saved" not in st.session_state:
+        st.session_state.text_saved = False  # Track if text has been saved
+
+
+
     # Sidebar for keyword management
     with st.sidebar:
         st.subheader("Keyword List")
@@ -144,21 +191,38 @@ def main():
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
-    save_button_disabled = secret_key != "zzzzzzzzz"
+    save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_saved
 
-    # Save text button
-    if st.button("Save Text", disabled=save_button_disabled):
-        if user_text.strip():
-            save_text_to_file(user_text)
-            st.session_state.show_confirmation = True
-            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-        else:
-            st.warning("Text Box Empty!")
+    col_1, col_2 = st.columns(2)
+    with col_1:
+        # Save text button
+        if st.button("Save Text", disabled=save_button_disabled):
+            if user_text.strip():
+                save_text_to_file(user_text)
+                st.session_state.show_confirmation = True
+                st.session_state.new_text_saved = True  # Enable "Delete Last" after saving
+                st.session_state.text_saved = True  # Disable "Save Text" after saving
+                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+            else:
+                st.warning("Text Box Empty!")
+                
+        if st.session_state.get("show_confirmation", False):
+            st.success("Text saved successfully!")
+            st.button("ClearInput", on_click=clear_text)
+            st.session_state.show_confirmation = False
+                
 
-    if st.session_state.get("show_confirmation", False):
-        st.success("Text saved successfully!")
-        st.button("ClearInput", on_click=clear_text)
-        st.session_state.show_confirmation = False
+    with col_2:
+        # Button to delete last entry from saved file
+        delete_button_disabled = not st.session_state.new_text_saved 
+        if st.button("Delete Last", disabled=delete_button_disabled):
+            delete_last_entry()
+            st.rerun()  # Rerun the app to reflect the changes immediately
+
+        if st.session_state.get("show_deletion_confirmation", False):
+            st.success("Last entry deleted successfully!")
+            st.session_state.show_deletion_confirmation = False
+                
 
     # Download button
     if st.button("Download Saved File"):

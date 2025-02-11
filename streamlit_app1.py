@@ -19,14 +19,62 @@ def save_text_to_file(text, filename="aiRecord.txt"):
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
 
+# Function to delete the last saved text entry
+def delete_last_entry():
+    try:
+        with open("aiRecord.txt", "r") as file:
+            lines = file.readlines()
+
+        if not lines:
+            st.warning("No entries to delete!")
+            return
+
+        # Reverse search for the last entry pattern
+        pattern = re.compile(r"^\{.*\}\[\d{4}:\d{1,2}:\d{1,2}\]$", re.DOTALL)
+        last_entry_start = None
+
+        for i in range(len(lines) - 1, -1, -1):
+            if pattern.match(lines[i].strip()):
+                last_entry_start = i
+                break
+        
+        if last_entry_start is not None:
+            # Remove the last entry
+            new_lines = lines[:last_entry_start]
+            with open("aiRecord.txt", "w") as file:
+                file.writelines(new_lines)
+
+            st.session_state.show_deletion_confirmation = True
+            st.session_state.new_text_saved = False
+        else:
+            st.warning("No valid entries found!")
+    
+    except FileNotFoundError:
+        st.warning("No saved entries found!")
+
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
     matching_paragraphs = []
     matches = re.findall(r'(\{.*?\})\s*(\[\d{4}:\d{2}:\d{2}\])', file_content, re.DOTALL)
+    
     for content, timestamp in matches:
         content_lower = " ".join(content.lower().split())
         if all(kw.lower() in content_lower for kw in keywords):
-            matching_paragraphs.append(f"{content} {timestamp}")
+            highlighted_content = content  # Copy content for modification
+            
+            # Change highlight color
+            highlight_color = "#efd06c"  # Change this to match your theme
+
+            for kw in keywords:
+                highlighted_content = re.sub(
+                    rf"({re.escape(kw)})",
+                    rf'<span style="background-color: {highlight_color}; color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px;">\1</span>',
+                    highlighted_content,
+                    flags=re.IGNORECASE
+                )
+
+            matching_paragraphs.append(f"{highlighted_content} {timestamp}")
+
     return matching_paragraphs
 
 # Function to extract timestamp from a paragraph
@@ -63,14 +111,14 @@ def load_keyword_list(filename="keywords.txt"):
 
 # Function to get paragraphs by date with trimmed content
 def get_paragraphs_by_date(file_content, target_date):
-    paragraphs = file_content.split("\n\n")
+    paragraphs = file_content.split("{")
     matching_paragraphs = []
     for paragraph in paragraphs:
         timestamp = extract_timestamp(paragraph)
         if timestamp and timestamp.date() == target_date.date():
-            trimmed_text = paragraph[-30:]  # Get only the last 20 characters
-            trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
-            matching_paragraphs.append(f"......{trimmed_text}......")
+            #trimmed_text = paragraph[-30:]  # Get only the last 20 characters
+            #trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
+            matching_paragraphs.append(paragraph)
     return matching_paragraphs
 
 # Streamlit app
@@ -132,6 +180,7 @@ def main():
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
     save_button_disabled = secret_key != "zzzzzzzzz"
 
+
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):
         if user_text.strip():
@@ -145,6 +194,10 @@ def main():
         st.success("Text saved successfully!")
         st.button("ClearInput", on_click=clear_text)
         st.session_state.show_confirmation = False
+
+    #delete last entry button
+    if st.button("Delete_last"):
+        delete_last_entry()
 
     # Download button
     if st.button("Download Saved File"):
@@ -177,58 +230,60 @@ def main():
     # Initialize session state for expand/collapse
     if "expand_all" not in st.session_state:
         st.session_state.expand_all = False  # Default: collapsed
-        
+
     # ytDay and toDay buttons
-    col1, col2, col3= st.columns(3)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("ytDay"):
-            if st.session_state.file_content:
+            if st.session_state.get("file_content"):
                 yesterday = datetime.now(midwest) - timedelta(days=1)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, yesterday)
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("No file content available.")
 
     with col2:
         if st.button("toDay"):
-            if st.session_state.file_content:
+            if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("No file content available.")
 
     # Button to toggle expand/collapse state
     with col3:
         if st.button("Expand All" if not st.session_state.expand_all else "Collapse All"):
-            st.session_state.expand_all = not st.session_state.expand_all  # Toggle state
-            st.rerun()  # Refresh the UI
+            st.session_state.expand_all = not st.session_state.expand_all
+            st.rerun()
 
     # Display matching paragraphs
-    if st.session_state.matching_paragraphs:
+    if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
         if st.session_state.expand_all:
-            # Show all paragraphs as a single block for easy copying
-            full_text = "\n\n".join(st.session_state.matching_paragraphs)
-            edited_paragraphs = st.text_area("Expanded Paragraphs:", value=full_text, height=300)
+            # Show all paragraphs as a single block for easy copying (preserving highlights)
+            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+            st.markdown(full_text, unsafe_allow_html=True)
 
-            # Copy button
+            # Copy button (removes HTML tags before copying)
             if st.button("Copy"):
+                plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
+                st.code(plain_text)
                 st.write("Copied to clipboard!")
-                st.code(edited_paragraphs)
 
         else:
-            # Show each paragraph as an expandable block
+            # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
-                truncated_text = f"......{paragraph[-30:]}......"  # Show only the last 30 characters
+                truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
+
                 with st.expander(truncated_text):
-                    st.write(paragraph)  # Show full text when expanded
+                    # Ensure highlights work when expanded
+                    cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
+                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:
         st.warning("No matching paragraphs found.")
-
-
 
 
 if __name__ == "__main__":

@@ -3,8 +3,12 @@ from gtts import gTTS
 from datetime import datetime, timedelta
 import pytz
 import re  # Import regex
+import os
 
 midwest = pytz.timezone("America/Chicago")
+# Define the filename in the same directory as the script
+FILE_NAME = "aiRecord.txt"
+FILE_PATH = os.path.join(os.path.dirname(__file__), FILE_NAME)
 
 # Function to save text to a file
 def save_text_to_file(text, filename="aiRecord.txt"):
@@ -18,39 +22,6 @@ def save_text_to_file(text, filename="aiRecord.txt"):
     # Update session state with new content
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
-
-# Function to delete the last saved text entry
-def delete_last_entry():
-    try:
-        with open("aiRecord.txt", "r") as file:
-            lines = file.readlines()
-
-        if not lines:
-            st.warning("No entries to delete!")
-            return
-
-        # Reverse search for the last entry pattern
-        pattern = re.compile(r"^\{.*\}\[\d{4}:\d{1,2}:\d{1,2}\]$", re.DOTALL)
-        last_entry_start = None
-
-        for i in range(len(lines) - 1, -1, -1):
-            if pattern.match(lines[i].strip()):
-                last_entry_start = i
-                break
-        
-        if last_entry_start is not None:
-            # Remove the last entry
-            new_lines = lines[:last_entry_start]
-            with open("aiRecord.txt", "w") as file:
-                file.writelines(new_lines)
-
-            st.session_state.show_deletion_confirmation = True
-            st.session_state.new_text_saved = False
-        else:
-            st.warning("No valid entries found!")
-    
-    except FileNotFoundError:
-        st.warning("No saved entries found!")
 
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
@@ -212,8 +183,7 @@ def main():
         st.success("Text saved successfully!")
         st.button("ClearInput", on_click=clear_text)
         st.session_state.show_confirmation = False
-
-                
+ 
     # Download button
     if st.button("Download Saved File"):
         if st.session_state.file_content:
@@ -225,6 +195,58 @@ def main():
             )
         else:
             st.error("No file found to download.")
+
+################ edit all records:
+    # Initialize session state variables
+    if "text" not in st.session_state:
+        st.session_state.text = ""
+    if "show_text_area" not in st.session_state:
+        st.session_state.show_text_area = False
+
+    # Load file button
+    if st.button("Load Record to Edit"):
+        if os.path.isfile(FILE_PATH):  # Check if the file exists
+            with open(FILE_PATH, "r", encoding="utf-8") as f:
+                st.session_state.text = f.read()
+            st.session_state.show_text_area = True  # Show text area
+            st.rerun()
+        else:
+            st.error(f"File '{FILE_NAME}' not found in the current directory.")
+
+    # Display text area only if show_text_area is True
+    if st.session_state.show_text_area:
+        st.text_area("Edit the text:", height=300, key="text")  # FIXED: No default value
+
+        # JavaScript to auto-scroll to the end
+        st.markdown(
+            """
+            <script>
+            function scrollToBottom() {
+                var textarea = document.querySelector('textarea');
+                if (textarea) {
+                    textarea.scrollTop = textarea.scrollHeight;
+                }
+            }
+            setTimeout(scrollToBottom, 100);
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Buttons
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Save Changes"):
+                with open(FILE_PATH, "w", encoding="utf-8") as f:
+                    f.write(st.session_state.text)  # Reads from session state
+                st.success(f"File '{FILE_NAME}' saved successfully!")
+
+        with col2:
+            if st.button("Remove Text Field"):
+                st.session_state.show_text_area = False  # Hide text area
+                st.rerun()  # Refresh UI
+
+#################
 
     # Search functionality
     st.subheader("Search for Information")

@@ -204,7 +204,7 @@ def main():
         st.session_state.show_text_area = False
 
     # Load file button
-    if st.button("Load Record to Edit", disabled=save_button_disabled):
+    if st.button("Load Record to Edit",disabled=save_button_disabled):
         if os.path.isfile(FILE_PATH):  # Check if the file exists
             with open(FILE_PATH, "r", encoding="utf-8") as f:
                 st.session_state.text = f.read()
@@ -216,31 +216,32 @@ def main():
     # Display text area only if show_text_area is True
     if st.session_state.show_text_area:
         st.text_area("Edit the text:", height=300, key="text")  # FIXED: No default value
-        
+
+        # JavaScript to auto-scroll to the end
+        st.markdown(
+            """
+            <script>
+            function scrollToBottom() {
+                var textarea = document.querySelector('textarea');
+                if (textarea) {
+                    textarea.scrollTop = textarea.scrollHeight;
+                }
+            }
+            setTimeout(scrollToBottom, 100);
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+
         # Buttons
-        col1, col2, col3 = st.columns(3)
+        col1, col2 = st.columns(2)
         with col1:
             if st.button("Save Changes"):
                 with open(FILE_PATH, "w", encoding="utf-8") as f:
                     f.write(st.session_state.text)  # Reads from session state
-                st.session_state.show_confirmation = True
-                st.session_state.text_saved = True  
                 st.success(f"File '{FILE_NAME}' saved successfully!")
-                
-        with col2:
-            # Download button
-            if st.button("Download Edited File"):
-                if st.session_state.file_content:
-                    st.download_button(
-                        label="Download aiRecord.txt",
-                        data=st.session_state.file_content,
-                        file_name="aiRecord.txt",
-                        mime="text/plain"
-                    )
-                else:
-                    st.error("No file found to download.")
 
-        with col3:
+        with col2:
             if st.button("Remove Text Field"):
                 st.session_state.show_text_area = False  # Hide text area
                 st.rerun()  # Refresh UI

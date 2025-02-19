@@ -196,6 +196,55 @@ def main():
         else:
             st.error("No file found to download.")
 
+################ edit all records:
+    # Initialize session state variables
+    if "text" not in st.session_state:
+        st.session_state.text = ""
+    if "show_text_area" not in st.session_state:
+        st.session_state.show_text_area = False
+
+    # Load file button
+    if st.button("Load Record to Edit",disabled=save_button_disabled):
+        if os.path.isfile(FILE_PATH):  # Check if the file exists
+            with open(FILE_PATH, "r", encoding="utf-8") as f:
+                st.session_state.text = f.read()
+            st.session_state.show_text_area = True  # Show text area
+            st.rerun()
+        else:
+            st.error(f"File '{FILE_NAME}' not found in the current directory.")
+
+    # Display text area only if show_text_area is True
+    if st.session_state.show_text_area:
+        st.text_area("Edit the text:", height=300, key="text")  # FIXED: No default value
+
+        # JavaScript to auto-scroll to the end
+        st.markdown(
+            """
+            <script>
+            function scrollToBottom() {
+                var textarea = document.querySelector('textarea');
+                if (textarea) {
+                    textarea.scrollTop = textarea.scrollHeight;
+                }
+            }
+            setTimeout(scrollToBottom, 100);
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Buttons
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Save Changes"):
+                with open(FILE_PATH, "w", encoding="utf-8") as f:
+                    f.write(st.session_state.text)  # Reads from session state
+                st.success(f"File '{FILE_NAME}' saved successfully!")
+
+        with col2:
+            if st.button("Remove Text Field"):
+                st.session_state.show_text_area = False  # Hide text area
+                st.rerun()  # Refresh UI
 
 #################
 

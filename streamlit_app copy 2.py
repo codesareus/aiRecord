@@ -216,23 +216,7 @@ def main():
     # Display text area only if show_text_area is True
     if st.session_state.show_text_area:
         st.text_area("Edit the text:", height=300, key="text")  # FIXED: No default value
-
-        # JavaScript to auto-scroll to the end
-        st.markdown(
-            """
-            <script>
-            function scrollToBottom() {
-                var textarea = document.querySelector('textarea');
-                if (textarea) {
-                    textarea.scrollTop = textarea.scrollHeight;
-                }
-            }
-            setTimeout(scrollToBottom, 100);
-            </script>
-            """,
-            unsafe_allow_html=True
-        )
-
+        
         # Buttons
         col1, col2 = st.columns(2)
         with col1:

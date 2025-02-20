@@ -278,7 +278,7 @@ def main():
                     # ######## Create a text area for user input
                     edited_text = st.text_area("Edit the text:", cleaned_paragraph, height=200)
                     # #####Display the rendered HTML
-                    if st.button("Editable"):
+                    if st.button("edit"):
                         st.markdown("### Preview:")
                     ####### Render the edited text with markdown
                     st.markdown(edited_text, unsafe_allow_html=True)

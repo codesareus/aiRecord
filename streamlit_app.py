@@ -255,8 +255,9 @@ def main():
             # ###Create a text area for user input
             edited_text = st.text_area("Edit the text:", full_text, height=200)
             # ###-Render the edited text with markdown
-            # Display the rendered HTML
-            st.markdown("### Preview:")
+            # ######Display the rendered HTML
+            if st.button("Editable"):
+                st.markdown("### Preview:")
             st.markdown(edited_text, unsafe_allow_html=True)
             #st.markdown(full_text, unsafe_allow_html=True)
 
@@ -276,6 +277,9 @@ def main():
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
                     # ######## Create a text area for user input
                     edited_text = st.text_area("Edit the text:", cleaned_paragraph, height=200)
+                    # #####Display the rendered HTML
+                    if st.button("Editable"):
+                        st.markdown("### Preview:")
                     ####### Render the edited text with markdown
                     st.markdown(edited_text, unsafe_allow_html=True)
                     

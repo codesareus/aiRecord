@@ -158,7 +158,7 @@ def main():
     user_text = st.text_area(
         "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
-        max_chars=2000,
+        max_chars=5000,
         key="text_area",
         height=300
     )

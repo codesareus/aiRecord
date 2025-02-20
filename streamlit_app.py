@@ -268,7 +268,12 @@ def main():
                 with st.expander(truncated_text):
                     # Ensure highlights work when expanded
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
-                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
+                    # ######## Create a text area for user input
+                    edited_text = st.text_area("Edit the text:", cleaned_paragraph, height=200)
+                    ####### Render the edited text with markdown
+                    st.markdown(edited_text, unsafe_allow_html=True)
+                    
+                    #st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:
         st.warning("No matching paragraphs found.")

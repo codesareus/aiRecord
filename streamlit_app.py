@@ -266,12 +266,12 @@ def main():
                 truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
 
                 with st.expander(truncated_text):
-                    # Ensure highlights work when expanded
+                    
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
                     # ######## Create a text area for user input
                     
-                    edited_text = st.text_area("Edit the text:", cleaned_paragraph, height=200)
-                    # #####Display the rendered HTML
+                    edited_text = st.text_area("Edit the text:", {paragraph}, height=200)
+                    # #####Display the rendered HTML。#cleaned_paragraph
                     #st.markdown("### Preview:")
                     ####### Render the edited text with markdown
                     #st.markdown(edited_text, unsafe_allow_html=True)      

@@ -269,7 +269,14 @@ def main():
                     
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
                     # ######## Create a text area for user input
-                    edited_text = st.text_area("expanded view:", cleaned_paragraph, height=400)
+                    text = st.text_area(
+                        "Enter your text (max 5000 characters):",
+                          value=cleaned_paragraph,
+                          max_chars=5000,
+                          key="text_area",
+                          height=300
+                    )
+                   # edited_text = st.text_area("expanded view:", cleaned_paragraph, height=400)
                     # #####Display the rendered HTML。#
                     #st.markdown("### Preview:")
                     ####### Render the edited text with markdown

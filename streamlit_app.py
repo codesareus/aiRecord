@@ -272,9 +272,9 @@ def main():
                     
                     edited_text = st.text_area("Edit the text:", cleaned_paragraph, height=200)
                     # #####Display the rendered HTML
-                    st.markdown("### Preview:")
+                    #st.markdown("### Preview:")
                     ####### Render the edited text with markdown
-                    st.markdown(edited_text, unsafe_allow_html=True)      
+                    #st.markdown(edited_text, unsafe_allow_html=True)      
                     #st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:

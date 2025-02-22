@@ -145,14 +145,50 @@ def main():
                 file.write("\n".join(keywords))
             st.session_state.keyword_list = keywords
             st.success("Keywords saved successfully!")
-
+##########################
         st.subheader("Saved Keywords")
-        for keyword in st.session_state.keyword_list:
-            if st.button(keyword):
-                st.session_state.search_phrase = keyword
-                st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
-                st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
-                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+
+# Assuming keyword_list is stored in session state
+        if 'keyword_list' not in st.session_state:
+            st.session_state.keyword_list = []
+
+# Display subheader
+        st.subheader("Saved Keywords")
+
+# Define the number of columns you want per row
+        columns_per_row = 4  # You can adjust this based on your preference
+
+# Calculate the number of rows needed
+        num_keywords = len(st.session_state.keyword_list)
+        num_rows = -(-num_keywords // columns_per_row)  # Ceiling division to determine rows
+
+# Loop through the keywords and display them in a grid
+        for row in range(num_rows):
+    # Create columns for each row
+            cols = st.columns(columns_per_row)
+    
+    # Iterate over the columns and place buttons inside
+            for col_idx in range(columns_per_row):
+                keyword_index = row * columns_per_row + col_idx
+        
+        # Check if there are still keywords left to display
+                if keyword_index < num_keywords:
+                    keyword = st.session_state.keyword_list[keyword_index]
+            
+            # Place the button inside the column
+                    with cols[col_idx]:
+                        if st.button(keyword):
+                            st.session_state.search_phrase = keyword
+                            st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
+                            st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
+                            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+        
+       # for keyword in st.session_state.keyword_list:
+            #if st.button(keyword):
+                #st.session_state.search_phrase = keyword
+               # st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
+               # st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
+              #  st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
 
     # Text input area
     user_text = st.text_area(

@@ -282,6 +282,7 @@ def main():
             st.rerun()
 
     # Display matching paragraphs
+    # Display matching paragraphs
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
@@ -302,18 +303,13 @@ def main():
                 truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
 
                 with st.expander(truncated_text):
-                    
+                    # Ensure highlights work when expanded
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
-                    # ######## Create a text area for user input
-                    edited_text = st.text_area("expanded view:", cleaned_paragraph, height=400)
-                    # #####Display the rendered HTML。#
-                    #st.markdown("### Preview:")
-                    ####### Render the edited text with markdown
-                    #st.markdown(edited_text, unsafe_allow_html=True)      
-                    #st.markdown(cleaned_paragraph, unsafe_allow_html=True)
+                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:
         st.warning("No matching paragraphs found.")
+
 
 
 if __name__ == "__main__":

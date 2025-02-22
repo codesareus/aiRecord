@@ -146,7 +146,7 @@ def main():
             st.session_state.keyword_list = keywords
             st.success("Keywords saved successfully!")
 ##########################
-        st.subheader("Saved Keywords")
+        #st.subheader("Saved Keywords")
 
 # Assuming keyword_list is stored in session state
         if 'keyword_list' not in st.session_state:

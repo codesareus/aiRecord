@@ -96,12 +96,39 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 # Function to generate and play speech
-# Function to clean text (removes numbers and special characters)
-def clean_textsymbols(text):
-    text = re.sub(r'[^A-Za-z\u4e00-\u9fff\s]', '', text)  # Keep English & Chinese characters
+# Function to clean text (removes numbers and special characters
+
+import re
+
+def clean_textsymbols(text, lang="zh"):
+    """
+    Cleans the text by removing unwanted symbols and characters based on the specified language mode.
+    
+    Args:
+        text (str): The input text to be cleaned.
+        language_mode (str): The language mode. Can be "English" or "Chinese".
+                             - If "English", all Chinese characters are removed.
+                             - If "Chinese", all English characters are removed.
+                             
+    Returns:
+        str: The cleaned text.
+    """
+    if lang == "en":
+        # Keep English letters, spaces, commas, and periods; remove everything else
+        text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
+        text = re.sub(r'[\u4e00-\u9fff]', '', text)  # Remove Chinese characters
+        text = re.sub(r'[^A-Za-z\s,.]', '', text)  # Keep only English letters, spaces, commas, and periods
+    elif lang == "zh":
+        # Keep Chinese characters, spaces, commas, and periods; remove everything else
+        text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
+        text = re.sub(r'[A-Za-z]', '', text)  # Remove English letters
+        text = re.sub(r'[^\u4e00-\u9fff\s，。]', '', text)  # Keep only Chinese characters, spaces, and Chinese punctuation
+    else:
+        raise ValueError("Invalid language_mode. Use 'English' or 'Chinese'.")
+    
+    # Normalize spaces
     text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
     return text
-
 # Function to generate speech
 def text_to_speech(text, lang="en", filename="speech.mp3"):
     cleaned_text = clean_textsymbols(text)  # Clean the text before conversion
@@ -315,7 +342,7 @@ def main():
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                full_text2 = clean_textsymbols(full_text)
+                full_text2 = clean_textsymbols(full_text, lang="zh")
                 st.write(full_text)
                 st.write(full_text2)
                 speech_file = text_to_speech(full_text2, lang="zh")

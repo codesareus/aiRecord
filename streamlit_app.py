@@ -315,8 +315,10 @@ def main():
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                full_text = " ".join(st.session_state.matching_paragraphs)
-                speech_file = text_to_speech(full_text, lang="zh")
+                full_text2 = " ".join(st.session_state.matching_paragraphs)
+                st.write(full_text)
+                st.write(full_text2)
+                speech_file = text_to_speech(full_text2, lang="zh")
                 st.audio(speech_file)
 
         # Copy button (removes HTML tags before copying)

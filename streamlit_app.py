@@ -97,14 +97,14 @@ def get_paragraphs_by_date(file_content, target_date):
 
 # Function to generate and play speech
 # Function to clean text (removes numbers and special characters)
-def clean_text(text):
+def clean_textsymbols(text):
     text = re.sub(r'[^A-Za-z\u4e00-\u9fff\s]', '', text)  # Keep English & Chinese characters
     text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
     return text
 
 # Function to generate speech
 def text_to_speech(text, lang="en", filename="speech.mp3"):
-    cleaned_text = clean_text(text)  # Clean the text before conversion
+    cleaned_text = clean_textsymbols(text)  # Clean the text before conversion
     tts = gTTS(cleaned_text, lang=lang)
     tts.save(filename)
     return filename
@@ -315,7 +315,7 @@ def main():
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                full_text2 = " ".join(st.session_state.matching_paragraphs)
+                full_text2 = clean_textsymbols(full_text)
                 st.write(full_text)
                 st.write(full_text2)
                 speech_file = text_to_speech(full_text2, lang="zh")

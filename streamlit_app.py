@@ -102,7 +102,7 @@ import re
 
 import re
 
-def clean_textsymbols(text, lang="zh"):
+def clean_textsymbols(text, lang=""):
     """
     Cleans the text by removing unwanted symbols and characters based on the specified language mode.
     

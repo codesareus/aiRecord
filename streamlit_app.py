@@ -298,11 +298,11 @@ def main():
 
         # Speech button
             if st.button("🔊 Listen (English)"):
-                speech_file = text_to_speech(full_text, lang="en")
+                speech_file = text_to_speech(full_text,  speed=1.5,lang="en")
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                speech_file = text_to_speech(full_text, lang="zh")
+                speech_file = text_to_speech(full_text,speed=1.5, lang="zh")
                 st.audio(speech_file)
 
         # Copy button (removes HTML tags before copying)
@@ -323,11 +323,11 @@ def main():
 
                 # Speech buttons for individual paragraphs
                     if st.button(f"🔊 Listen (English) {idx}", key=f"listen_en_{idx}"):
-                        speech_file = text_to_speech(paragraph, lang="en", filename=f"speech_{idx}.mp3")
+                        speech_file = text_to_speech(paragraph, lang="en", speed=1.5, filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
 
                     if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
-                        speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
+                        speech_file = text_to_speech(paragraph, lang="zh", speed=1.5,filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
 
     else:

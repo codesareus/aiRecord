@@ -117,8 +117,8 @@ def clean_textsymbols(text, lang="zh"):
     """
     if lang == "en":
         # Keep English letters, spaces, commas, and periods; remove everything else
-        text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
-        text = re.sub(r'[\u4e00-\u9fff]', '', text)  # Remove Chinese characters
+        #text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
+        #text = re.sub(r'[\u4e00-\u9fff]', '', text)  # Remove Chinese characters
         text = re.sub(r'[^A-Za-z\s,.]', '', text)  # Keep only English letters, spaces, commas, and periods
     elif lang == "zh":
         # Keep Chinese characters, spaces, commas, and periods; remove everything else
@@ -345,10 +345,7 @@ def main():
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                full_text2 = clean_textsymbols(full_text, lang="zh")
-                st.write(full_text)
-                st.write(full_text2)
-                speech_file = text_to_speech(full_text2, lang="zh")
+                speech_file = text_to_speech(full_text, lang="zh")
                 st.audio(speech_file)
 
         # Copy button (removes HTML tags before copying)

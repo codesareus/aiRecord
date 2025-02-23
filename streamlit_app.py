@@ -97,7 +97,7 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 # Function to generate and play speech
-def text_to_speech(text, lang="en", speed=2.0, filename="speech.mp3"):
+def text_to_speech(text, lang="en", speed=1.5, filename="speech.mp3"):
     # Generate speech with gTTS
     tts = gTTS(text, lang=lang)
     tts.save(filename)
@@ -298,7 +298,7 @@ def main():
             st.rerun()
 
     # Display matching paragraphs
-    speed = st.slider("Set Speech Speed", 0.5, 2.0, 1.0, 0.1)
+    speed = st.slider("Set Speech Speed", 2.0, 1.5, 1.0, 0.5)
     
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")

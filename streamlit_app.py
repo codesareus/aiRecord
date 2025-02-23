@@ -337,7 +337,7 @@ def main():
             
             if st.button("🔊 Listen (English)"):
                 
-                full_text =  clean_textsymbols(full_text, lang="en"):
+                full_text =  clean_textsymbols(full_text, lang="en")
                 st.write(full_text)
                 speech_file = text_to_speech(full_text, lang="en")
                 st.audio(speech_file)

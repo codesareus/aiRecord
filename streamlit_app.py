@@ -100,7 +100,9 @@ def get_paragraphs_by_date(file_content, target_date):
 
 import re
 
-def clean_textsymbols(text, lang="zh"):
+import re
+
+def clean_textsymbols(text, langu="zh"):
     """
     Cleans the text by removing unwanted symbols and characters based on the specified language mode.
     
@@ -129,6 +131,7 @@ def clean_textsymbols(text, lang="zh"):
     # Normalize spaces
     text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
     return text
+    
 # Function to generate speech
 def text_to_speech(text, lang="en", filename="speech.mp3"):
     cleaned_text = clean_textsymbols(text)  # Clean the text before conversion

@@ -298,7 +298,7 @@ def main():
             st.rerun()
 
     # Display matching paragraphs
-    speed = st.slider("Set Speech Speed", 2.0, 1.5, 1.0, 0.5)
+    speed = st.slider("Set Speech Speed", 1.5, 2.0, 1.0, 0.5)
     
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")

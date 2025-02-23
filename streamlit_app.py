@@ -123,8 +123,8 @@ def clean_textsymbols(text, lang="zh"):
     elif lang == "zh":
         # Keep Chinese characters, spaces, commas, and periods; remove everything else
         text = re.sub(r'[^\u4e00-\u9fff\s，。]', '', text)  # Keep only Chinese characters, spaces, and Chinese punctuation
-        text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
-        text = re.sub(r'[A-Za-z]', '', text)  # Remove English letters   
+        #text = re.sub(r'[^\u0020-\u007E\u4e00-\u9fff]', '', text)  # Remove non-ASCII and non-Chinese characters
+        #text = re.sub(r'[A-Za-z]', '', text)  # Remove English letters   
     else:
         raise ValueError("Invalid language_mode. Use 'English' or 'Chinese'.")
     

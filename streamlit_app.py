@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 import re  # Import regex
 import os
+from pydub import AudioSegment
 
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
@@ -96,10 +97,19 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 # Function to generate and play speech
-def text_to_speech(text, lang="en", filename="speech.mp3"):
+def text_to_speech(text, lang="en", speed=2.0, filename="speech.mp3"):
+    # Generate speech with gTTS
     tts = gTTS(text, lang=lang)
     tts.save(filename)
-    return filename
+
+    # Modify speed using pydub
+    audio = AudioSegment.from_file(filename)
+    new_audio = audio.speedup(playback_speed=speed)
+
+    # Save adjusted audio
+    new_filename = f"modified_{filename}"
+    new_audio.export(new_filename, format="mp3")
+    return new_filename
 
 # Streamlit app
 def main():
@@ -288,6 +298,8 @@ def main():
             st.rerun()
 
     # Display matching paragraphs
+    speed = st.slider("Set Speech Speed", 0.5, 2.0, 1.0, 0.1)
+    
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
@@ -298,11 +310,11 @@ def main():
 
         # Speech button
             if st.button("🔊 Listen (English)"):
-                speech_file = text_to_speech(full_text, lang="en")
+                speech_file = text_to_speech(full_text, lang="en", speed=speed)
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
-                speech_file = text_to_speech(full_text, lang="zh")
+                speech_file = text_to_speech(full_text, lang="zh", speed=speed)
                 st.audio(speech_file)
 
         # Copy button (removes HTML tags before copying)
@@ -323,11 +335,11 @@ def main():
 
                 # Speech buttons for individual paragraphs
                     if st.button(f"🔊 Listen (English) {idx}", key=f"listen_en_{idx}"):
-                        speech_file = text_to_speech(paragraph, lang="en", filename=f"speech_{idx}.mp3")
+                        speech_file = text_to_speech(paragraph, lang="en", speed=speed, filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
 
                     if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
-                        speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
+                        speech_file = text_to_speech(paragraph, lang="zh", speed=speed, filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
 
     else:

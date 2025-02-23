@@ -336,7 +336,9 @@ def main():
             st.markdown(full_text, unsafe_allow_html=True)
             
             if st.button("🔊 Listen (English)"):
-                full_text = " ".join(st.session_state.matching_paragraphs)
+                
+                full_text =  clean_textsymbols(full_text, lang="en"):
+                st.write(full_text)
                 speech_file = text_to_speech(full_text, lang="en")
                 st.audio(speech_file)
 

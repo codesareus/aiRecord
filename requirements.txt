@@ -2,3 +2,4 @@ datetime
 streamlit
 gtts
 pytz
+pydub

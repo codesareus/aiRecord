@@ -95,6 +95,12 @@ def get_paragraphs_by_date(file_content, target_date):
             matching_paragraphs.append(paragraph)
     return matching_paragraphs
 
+# Function to generate and play speech
+def text_to_speech(text, lang="en", filename="speech.mp3"):
+    tts = gTTS(text, lang=lang)
+    tts.save(filename)
+    return filename
+
 # Streamlit app
 def main():
     st.title("AI Record App")
@@ -281,59 +287,51 @@ def main():
             st.session_state.expand_all = not st.session_state.expand_all
             st.rerun()
 
-# Function to generate and play speech
-def text_to_speech(text, lang="en", filename="speech.mp3"):
-    tts = gTTS(text, lang=lang)
-    tts.save(filename)
-    return filename
+    # Display matching paragraphs
+    if st.session_state.get("matching_paragraphs"):
+        st.subheader("Matching Paragraphs:")
 
-# Display matching paragraphs
-if st.session_state.get("matching_paragraphs"):
-    st.subheader("Matching Paragraphs:")
-
-    if st.session_state.expand_all:
+        if st.session_state.expand_all:
         # Show all paragraphs as a single block for easy copying (preserving highlights)
-        full_text = "<br><br>".join(st.session_state.matching_paragraphs)
-        st.markdown(full_text, unsafe_allow_html=True)
+            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+            st.markdown(full_text, unsafe_allow_html=True)
 
         # Speech button
-        if st.button("🔊 Listen (English)"):
-            speech_file = text_to_speech(full_text, lang="en")
-            st.audio(speech_file)
+            if st.button("🔊 Listen (English)"):
+                speech_file = text_to_speech(full_text, lang="en")
+                st.audio(speech_file)
 
-        if st.button("🔊 听 (中文)"):
-            speech_file = text_to_speech(full_text, lang="zh")
-            st.audio(speech_file)
+            if st.button("🔊 听 (中文)"):
+                speech_file = text_to_speech(full_text, lang="zh")
+                st.audio(speech_file)
 
         # Copy button (removes HTML tags before copying)
-        if st.button("Copy"):
-            plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
-            st.code(plain_text)
-            st.write("Copied to clipboard!")
+            if st.button("Copy"):
+                plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
+                st.code(plain_text)
+                st.write("Copied to clipboard!")
 
-    else:
+        else:
         # Show each paragraph as an expandable block without highlights when collapsed
-        for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
-            truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
+            for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
+                truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
 
-            with st.expander(truncated_text):
+                with st.expander(truncated_text):
                 # Ensure highlights work when expanded
-                cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
-                st.markdown(cleaned_paragraph, unsafe_allow_html=True)
+                    cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
+                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
                 # Speech buttons for individual paragraphs
-                if st.button(f"🔊 Listen (English) {idx}", key=f"listen_en_{idx}"):
-                    speech_file = text_to_speech(paragraph, lang="en", filename=f"speech_{idx}.mp3")
-                    st.audio(speech_file)
+                    if st.button(f"🔊 Listen (English) {idx}", key=f"listen_en_{idx}"):
+                        speech_file = text_to_speech(paragraph, lang="en", filename=f"speech_{idx}.mp3")
+                        st.audio(speech_file)
 
-                if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
-                    speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
-                    st.audio(speech_file)
+                    if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
+                        speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
+                        st.audio(speech_file)
 
-else:
-    st.warning("No matching paragraphs found.")
-
-
+    else:
+        st.warning("No matching paragraphs found.")
 
 if __name__ == "__main__":
     main()

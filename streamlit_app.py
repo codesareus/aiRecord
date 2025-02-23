@@ -96,10 +96,23 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 # Function to generate and play speech
+# Function to clean text (removes numbers and special characters)
+def clean_text(text):
+    text = re.sub(r'[^A-Za-z\u4e00-\u9fff\s]', '', text)  # Keep English & Chinese characters
+    text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+    return text
+
+# Function to generate speech
 def text_to_speech(text, lang="en", filename="speech.mp3"):
-    tts = gTTS(text, lang=lang)
+    cleaned_text = clean_text(text)  # Clean the text before conversion
+    tts = gTTS(cleaned_text, lang=lang)
     tts.save(filename)
     return filename
+
+#def text_to_speech(text, lang="en", filename="speech.mp3"):
+   # tts = gTTS(text, lang=lang)
+ #   tts.save(filename)
+  #  return filename
 
 # Streamlit app
 def main():
@@ -295,13 +308,14 @@ def main():
         # Show all paragraphs as a single block for easy copying (preserving highlights)
             full_text = "<br><br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
-
-        # Speech button
+            
             if st.button("🔊 Listen (English)"):
+                full_text = " ".join(st.session_state.matching_paragraphs)
                 speech_file = text_to_speech(full_text, lang="en")
                 st.audio(speech_file)
 
             if st.button("🔊 听 (中文)"):
+                full_text = " ".join(st.session_state.matching_paragraphs)
                 speech_file = text_to_speech(full_text, lang="zh")
                 st.audio(speech_file)
 

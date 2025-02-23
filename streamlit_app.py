@@ -98,11 +98,7 @@ def get_paragraphs_by_date(file_content, target_date):
 # Function to generate and play speech
 # Function to clean text (removes numbers and special characters
 
-import re
-
-import re
-
-def clean_textsymbols(text, lang=""):
+def clean_textsymbols(text, lang="zh"):
     """
     Cleans the text by removing unwanted symbols and characters based on the specified language mode.
     

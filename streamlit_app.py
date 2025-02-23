@@ -335,13 +335,6 @@ def main():
             full_text = "<br><br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
             
-            if st.button("🔊 Listen (English)"):
-                
-                full_text =  clean_textsymbols(full_text, lang="en")
-                st.write(full_text)
-                speech_file = text_to_speech(full_text, lang="en")
-                st.audio(speech_file)
-
             if st.button("🔊 听 (中文)"):
                 speech_file = text_to_speech(full_text, lang="zh")
                 st.audio(speech_file)
@@ -363,9 +356,6 @@ def main():
                     st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
                 # Speech buttons for individual paragraphs
-                    if st.button(f"🔊 Listen (English) {idx}", key=f"listen_en_{idx}"):
-                        speech_file = text_to_speech(paragraph, lang="en", filename=f"speech_{idx}.mp3")
-                        st.audio(speech_file)
 
                     if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
                         speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")

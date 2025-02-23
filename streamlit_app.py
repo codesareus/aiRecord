@@ -96,7 +96,7 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 # Function to generate and play speech
-def text_to_speech(text, lang="en", filename="speech.mp3"):
+def text_to_speech(text, lang="en", speed=1.5, filename="speech.mp3"):
     tts = gTTS(text, lang=lang)
     tts.save(filename)
     return filename

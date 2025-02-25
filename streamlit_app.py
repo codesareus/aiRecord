@@ -367,7 +367,8 @@ def main():
                         st.download_button(
                             label="⬇️ 下载语音文件",
                             data=audio_bytes,
-                            file_name=f"speech_{idx}.mp3",
+                           # file_name=f"speech_{idx}.mp3",
+                            file_name=f"search_phrase_{idx}.mp3",
                             mime="audio/mpeg",
                             key=f"download_{idx}"
                         )

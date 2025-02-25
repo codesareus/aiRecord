@@ -339,6 +339,18 @@ def main():
                 speech_file = text_to_speech(full_text, lang="zh")
                 st.audio(speech_file)
 
+            # Add download button
+                with open(speech_file, "rb") as f:
+                    audio_bytes = f.read()
+    
+                    st.download_button(
+                        label="⬇️ 下载语音文件",
+                        data=audio_bytes,
+                           # file_name=f"speech_{idx}.mp3",
+                        file_name=f"{search_phrase}_{idx}.mp3",
+                        mime="audio/mpeg",
+                        key=f"download_{idx}"
+                    )
         # Copy button (removes HTML tags before copying)
             if st.button("Copy"):
                 plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
@@ -360,7 +372,7 @@ def main():
                     if st.button(f"🔊 听 (中文) {idx}", key=f"listen_zh_{idx}"):
                         speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
-    # Add download button
+                        # Add download button
                         with open(speech_file, "rb") as f:
                             audio_bytes = f.read()
     

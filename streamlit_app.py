@@ -361,8 +361,8 @@ def main():
                         speech_file = text_to_speech(paragraph, lang="zh", filename=f"speech_{idx}.mp3")
                         st.audio(speech_file)
     # Add download button
-                    with open(speech_file, "rb") as f:
-                        audio_bytes = f.read()
+                        with open(speech_file, "rb") as f:
+                            audio_bytes = f.read()
     
                         st.download_button(
                             label="⬇️ 下载语音文件",

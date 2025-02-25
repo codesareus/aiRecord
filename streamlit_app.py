@@ -314,7 +314,7 @@ def main():
     with col2:
         if st.button("-2days"):
             if st.session_state.get("file_content"):
-                dbytd = datetime.now(midwest) - timedelta(days=3)
+                dbytd = datetime.now(midwest) - timedelta(days=2)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, dbytd)
                 st.rerun()
             else:

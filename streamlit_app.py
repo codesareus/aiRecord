@@ -328,7 +328,7 @@ def main():
 
     # Display matching paragraphs
     if st.session_state.get("matching_paragraphs"):
-        st.subheader("Matching Paragraphs:")
+        st.subheader(f"Matching Paragraphs:({search_phrase})")
 
         if st.session_state.expand_all:
         # Show all paragraphs as a single block for easy copying (preserving highlights)

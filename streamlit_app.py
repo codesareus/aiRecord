@@ -301,8 +301,18 @@ def main():
         st.session_state.expand_all = False  # Default: collapsed
 
     # ytDay and toDay buttons
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
+
     with col1:
+        if st.button("-2days"):
+            if st.session_state.get("file_content"):
+                dbytd = datetime.now(midwest) - timedelta(days=2)
+                st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, dbytd)
+                st.rerun()
+            else:
+                st.warning("No file content available.")
+                
+    with col2:
         if st.button("ytDay"):
             if st.session_state.get("file_content"):
                 yesterday = datetime.now(midwest) - timedelta(days=1)
@@ -311,7 +321,7 @@ def main():
             else:
                 st.warning("No file content available.")
 
-    with col2:
+    with col3:
         if st.button("toDay"):
             if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
@@ -321,7 +331,7 @@ def main():
                 st.warning("No file content available.")
 
     # Button to toggle expand/collapse state
-    with col3:
+    with col4:
         if st.button("Expand All" if not st.session_state.expand_all else "Collapse All"):
             st.session_state.expand_all = not st.session_state.expand_all
             st.rerun()

@@ -347,9 +347,9 @@ def main():
                         label="⬇️ 下载语音文件",
                         data=audio_bytes,
                            # file_name=f"speech_{idx}.mp3",
-                        file_name=f"{search_phrase}_{idx}.mp3",
+                        file_name=f"{search_phrase}_全部.mp3",
                         mime="audio/mpeg",
-                        key=f"download_{idx}"
+                        key=f"download_全部"
                     )
         # Copy button (removes HTML tags before copying)
             if st.button("Copy"):

@@ -5,6 +5,8 @@ import pytz
 import re  # Import regex
 import os
 
+st.set_page_config(initial_sidebar_state="collapsed")
+
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
 FILE_NAME = "aiRecord.txt"

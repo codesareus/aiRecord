@@ -246,18 +246,15 @@ def main():
     
     with open('aiRecord.txt', "r") as file:
         record = file.read()
-        st.code(record[-1000:])
-        st.code(record[-10:])
-
+        
     # Toggle checkbox to expand/collapse
-    show_full = st.checkbox("View full record")
+    show_full = st.checkbox("View recent records")
 
     if show_full:
-        st.code(record)  # Show full content when expanded
+        st.code(record[-1000:])  # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
-        truncated = record.split('\n')[-1][:100] if record else ""
-        st.code(truncated + ("..." if len(record.split('\n')[-1]) > 100 else ""))
+        st.code(record[-20:])
         
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

@@ -244,7 +244,7 @@ def main():
         height=300
     )
     
-    with open('aiRecord', "r") as file:
+    with open('aiRecord.txt', "r") as file:
         record = file.read()
         st.code(record[-10])
         st.code(record[-10][-10])

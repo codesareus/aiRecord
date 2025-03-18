@@ -246,7 +246,7 @@ def main():
     
     with open('aiRecord.txt', "r") as file:
         record = file.read()
-        st.code(record[-10])
+        st.code(record[-1000])
         #st.code(record[-10][-10])
         
     # Secret key input

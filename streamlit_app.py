@@ -248,6 +248,16 @@ def main():
         record = file.read()
         st.code(record[-1000:])
         st.code(record[-10:])
+
+    # Toggle checkbox to expand/collapse
+    show_full = st.checkbox("View full record")
+
+    if show_full:
+        st.code(record)  # Show full content when expanded
+    else:
+    # Display truncated text (last line or first 100 characters)
+        truncated = record.split('\n')[-1][:100] if record else ""
+        st.code(truncated + ("..." if len(record.split('\n')[-1]) > 100 else ""))
         
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

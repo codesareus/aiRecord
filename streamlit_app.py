@@ -254,7 +254,8 @@ def main():
         st.code(record[-1000:])  # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
-        st.code(f"Last: {record[-12:]} ... {record[:18]}")
+        displaytext = f"Last: {record[-12:]} ... {record[:21]}"
+        st.code(displaytext)
         
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

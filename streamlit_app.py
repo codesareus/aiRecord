@@ -251,7 +251,7 @@ def main():
     show_full = st.checkbox("View recent records")
 
     if show_full:
-        st.code(record[-1000:])  # Show full content when expanded
+        st.code(record[-2000:])  # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
         displaytext = f"Last: {record[-12:-1]} ... {record[:21]}"

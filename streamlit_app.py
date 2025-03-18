@@ -175,8 +175,6 @@ def main():
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
 
-
-
     # Sidebar for keyword management
     with st.sidebar:
         st.subheader("Keyword List")
@@ -245,7 +243,12 @@ def main():
         key="text_area",
         height=300
     )
-
+    
+    with open('aiRecord', "r") as file:
+        record = file.read()
+        st.code(record[-10])
+        st.code(record[-10][-10])
+        
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
     save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_saved

@@ -154,17 +154,27 @@ def main():
                 st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
                 st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
 
+
+    ## upload
+    
+    show_upload = st.checkbox("Upload local records", value=False)
+    
+    if show_upload:
+        uploaded_file = st.file_uploader("Choose txt file", type=["txt"])
+        
+        if uploaded_file is not None:
+            st.session_state.file_content = uploaded_file.read().decode('utf-8')
+            
     # Text input area
     user_text = st.text_area(
         "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
-        max_chars=2000,
+        #max_chars=2000,
         key="text_area",
         height=300
     )
 
-    if st.checkbox("upload local records"):
-        st.write("09")
+    st.code(f"{session_state.file_content.splitline[0]}...{session_state.file_content[-20:]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

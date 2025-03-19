@@ -182,17 +182,28 @@ def main():
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
 
-##### upload file ###########
- # Toggle checkbox to 
-    upload = st.checkbox("uploade local record")
-    if upload:
-        uploaded_file = st.file_uploader("Upload your mood history TXT", type=["txt"])
-        if uploaded_file is not None:
-    # Read the file content as text
-        #text_content = uploaded_file.getvalue().decode()
-            st.session_state.file_content = uploaded_file.read()
-            st.code(st.session_state.file_content[-20:])
+# Toggle checkbox to upload local record
+upload = st.checkbox("Upload local record")
+if upload:
+    # File uploader widget
+    uploaded_file = st.file_uploader("Upload your mood history TXT", type=["txt"])
     
+    if uploaded_file is not None:
+        # Read and decode the file content
+        text_content = uploaded_file.read().decode('utf-8')
+        st.session_state.file_content = text_content
+        
+        # Display the last 20 characters of the file content
+        st.code(text_content[-20:])
+        
+        # Update the server file "aiRecord.txt"
+        try:
+            with open("aiRecord.txt", "w") as server_file:
+                server_file.write(text_content)  # Append the uploaded content to the server file
+            st.success("File content successfully updated in aiRecord.txt!")
+        except Exception as e:
+            st.error(f"Failed to update aiRecord.txt: {e}")
+
     # Sidebar for keyword management
     with st.sidebar:
         st.subheader("Keyword List")

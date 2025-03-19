@@ -174,6 +174,7 @@ def main():
         
         if uploaded_file is not None:
             st.session_state.file_content = uploaded_file.read().decode('utf-8')
+            st.rerun()
             
     # Text input area
     user_text = st.text_area(

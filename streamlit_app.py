@@ -310,6 +310,7 @@ def main():
     with col1: 
         # Download button
         if st.button("Download Saved File"):
+            st.write(st.session_state.file_content)
             if st.session_state.file_content:
                 st.download_button(
                     label="Download aiRecord.txt",

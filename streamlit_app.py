@@ -152,10 +152,7 @@ def load_file():
 # Streamlit app
 def main():
     st.title("AI Record App")
-
-    ###### upload file
     
-
     # Initialize session state for file content
     if "file_content" not in st.session_state:
         try:
@@ -185,6 +182,16 @@ def main():
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
 
+##### upload file ###########
+ # Toggle checkbox to 
+    upload = st.checkbox("uploade local record")
+    if upload:
+        uploaded_file = st.file_uploader("Upload your mood history TXT", type=["txt"])
+    if uploaded_file is not None:
+    # Read the file content as text
+        #text_content = uploaded_file.getvalue().decode()
+        st.session_state.file_content = uploaded_file.read()
+    
     # Sidebar for keyword management
     with st.sidebar:
         st.subheader("Keyword List")
@@ -263,7 +270,7 @@ def main():
     show_full = st.checkbox("View recent records")
 
     if show_full:
-        st.code(record[-2000:])  # Show full content when expanded
+        st.code(record)  # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
         displaytext = f"Last: {record[-24:-1]} ... {first_line}"

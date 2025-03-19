@@ -169,16 +169,16 @@ def main():
     user_text = st.text_area(
         "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
-        #max_chars=2000,
+        max_chars=2000,
         key="text_area",
         height=300
     )
 
     recentR= st.checkbox("show recent records")
     if recentR:
-        st.code(f"Recent: {st.session_state.file_content[-2000:]}")
+        st.code(f"Recent: {st.session_state.file_content[-1900:]}")
     else:
-        st.code(f"Last: {st.session_state.file_content[-14:]}...Reboot: {st.session_state.file_content[:30]}")
+        st.code(f"Last: {st.session_state.file_content[-30:-2]}...Reboot: {st.session_state.file_content[:40]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

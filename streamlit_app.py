@@ -246,6 +246,8 @@ def main():
     
     with open('aiRecord.txt', "r") as file:
         record = file.read()
+        lines = record.splitlines()  # Handles different OS line endings
+        first_line = lines[0] if lines else ""  # Handle empty input
         
     # Toggle checkbox to expand/collapse
     show_full = st.checkbox("View recent records")
@@ -254,7 +256,7 @@ def main():
         st.code(record[-2000:])  # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
-        displaytext = f"Last: {record[-12:-1]} ... {record[:21]}"
+        displaytext = f"Last: {record[-24:-1]} ... {first_line}"
         st.code(displaytext)
         
     # Secret key input

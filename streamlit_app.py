@@ -322,7 +322,7 @@ def main():
                 st.error("No file found to download.")
         
     with col2: 
-        if st.button("Copy all records"):
+        if st.button("show all records"):
             if st.session_state.file_content:
                 st.code(st.session_state.file_content)
 

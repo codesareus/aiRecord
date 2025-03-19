@@ -193,8 +193,8 @@ def main():
             text_content = uploaded_file.read().decode('utf-8')
             st.session_state.file_content = text_content
             
-            # Display the last 20 characters of the file content
-            st.write("ok. ...   " + text_content[-20:])
+            # Display   the file content
+            st.code(text_content)
             
             # Update the server file "aiRecord.txt"
             try:
@@ -282,7 +282,7 @@ def main():
     show_full = st.checkbox("View recent records")
 
     if show_full:
-        st.code(record)  # Show full content when expanded
+        st.code(record[-2000:]) # Show full content when expanded
     else:
     # Display truncated text (last line or first 100 characters)
         displaytext = f"Last: {record[-24:-1]} ... {first_line}"

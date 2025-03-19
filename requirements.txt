@@ -4,3 +4,4 @@ gtts
 pytz
 pydub
 textblob
+matplotlib

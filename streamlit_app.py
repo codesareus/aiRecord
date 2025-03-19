@@ -306,10 +306,7 @@ def main():
         st.button("ClearInput", on_click=clear_text)
         st.session_state.show_confirmation = False
 
-    co1, col2 = st.columns(2)
-    with col1: 
-        # Download button
-        if st.button("Download Saved File"):
+    if st.button("Download Saved File"):
             st.write(st.session_state.file_content)
             if st.session_state.file_content:
                 st.download_button(
@@ -321,6 +318,12 @@ def main():
             else:
                 st.error("No file found to download.")
 
+
+    co1, col2 = st.columns(2)
+    with col1: 
+        # Download button
+        st.write("OK")
+        
     with col2: 
         if st.button("Copy all records"):
             if st.session_state.file_content:

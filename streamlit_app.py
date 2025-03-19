@@ -149,20 +149,21 @@ def main():
     
         st.subheader("Saved Keywords")
 
+    with st.sidebar:
     # Arrange saved keywords in columns
-    if st.session_state.keyword_list:
-        num_columns = 3  # Number of columns to display buttons in
-        keyword_chunks = [st.session_state.keyword_list[i:i + num_columns] for i in range(0, len(st.session_state.keyword_list), num_columns)]
-
-        for chunk in keyword_chunks:
-            cols = st.columns(num_columns)
-            for i, keyword in enumerate(chunk):
-                with cols[i]:
-                    if st.button(keyword, key=f"keyword_{keyword}"):
-                        st.session_state.search_phrase = keyword
-                        st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
-                        st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
-                        st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+        if st.session_state.keyword_list:
+            num_columns = 3  # Number of columns to display buttons in
+            keyword_chunks = [st.session_state.keyword_list[i:i + num_columns] for i in range(0, len(st.session_state.keyword_list), num_columns)]
+    
+            for chunk in keyword_chunks:
+                cols = st.columns(num_columns)
+                for i, keyword in enumerate(chunk):
+                    with cols[i]:
+                        if st.button(keyword, key=f"keyword_{keyword}"):
+                            st.session_state.search_phrase = keyword
+                            st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
+                            st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
+                            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
 
     ## upload
     

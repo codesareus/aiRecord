@@ -163,6 +163,9 @@ def main():
         height=300
     )
 
+    if st.checkbox("upload local records"):
+        st.write("09")
+
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
     save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_saved
@@ -195,8 +198,8 @@ def main():
                     file_name="aiRecord.txt",
                     mime="text/plain"
                 )
-        else:
-            st.error("No file found to download.")
+            else:
+                st.error("No file found to download.")
 
     with col2:
         if st.checkbox("show all records"):

@@ -141,10 +141,20 @@ def text_to_speech(text, lang="en", filename="speech.mp3"):
    # tts = gTTS(text, lang=lang)
  #   tts.save(filename)
   #  return filename
-
+def load_file():
+    # Allow user to upload a TXT file
+    uploaded_file = st.file_uploader("Upload your mood history TXT", type=["txt"])
+    if uploaded_file is not None:
+    # Read the file content as text
+        text_content = uploaded_file.getvalue().decode()
+    return text_content
+    
 # Streamlit app
 def main():
     st.title("AI Record App")
+
+    ###### upload file
+    
 
     # Initialize session state for file content
     if "file_content" not in st.session_state:

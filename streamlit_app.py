@@ -496,13 +496,6 @@ if uploaded_file is not None:
         # Load the uploaded file into a DataFrame
         st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
         
-        # Ensure the Date column is timezone-aware in Chicago time
-        st.session_state.mood_history["Date"] = (
-            st.session_state.mood_history["Date"]
-            .dt.tz_localize("UTC")  # Assume uploaded dates are in UTC
-            .dt.tz_convert(CHICAGO_TZ)  # Convert to Chicago time
-        )
-        
         # Save the DataFrame to the server, replacing the existing file
         st.session_state.mood_history.to_csv(CSV_FILE, index=False)
         st.success(f"File '{CSV_FILE}' has been successfully replaced with the uploaded data.")

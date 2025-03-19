@@ -176,7 +176,7 @@ def main():
 
     recentR= st.checkbox("show recent records")
     if recentR:
-        st.code(f"Recent: {st.session_state.file_content[-2000:]}
+        st.code(f"Recent: {st.session_state.file_content[-2000:]}")
     else:
         st.code(f"Last: {st.session_state.file_content[-14:]}...Reboot: {st.session_state.file_content[:30]}")
 

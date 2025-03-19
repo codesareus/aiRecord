@@ -307,7 +307,7 @@ def main():
         st.session_state.show_confirmation = False
 
     if st.button("Download Saved File"):
-            st.write(st.session_state.file_content)
+            #st.write(st.session_state.file_content)
             if st.session_state.file_content:
                 st.download_button(
                     label="Download aiRecord.txt",

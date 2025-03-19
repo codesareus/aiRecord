@@ -194,7 +194,7 @@ def main():
             st.session_state.file_content = text_content
             
             # Display the last 20 characters of the file content
-            st.code(text_content[-20:])
+            st.write("ok. ...   ' + text_content[-20:])
             
             # Update the server file "aiRecord.txt"
             try:

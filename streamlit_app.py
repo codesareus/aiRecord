@@ -512,11 +512,7 @@ else:
     if os.path.exists(CSV_FILE):
         st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])
         # Ensure the Date column is timezone-aware in Chicago time
-        st.session_state.mood_history["Date"] = (
-            st.session_state.mood_history["Date"]
-            .dt.tz_localize("UTC")  # Assume stored dates are in UTC
-            .dt.tz_convert(CHICAGO_TZ)  # Convert to Chicago time
-        )
+        
     else:
         st.session_state.mood_history = pd.DataFrame(columns=[
             "Date", "Sentence 1", "Sentence 2", 

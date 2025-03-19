@@ -191,6 +191,7 @@ def main():
     # Read the file content as text
         #text_content = uploaded_file.getvalue().decode()
             st.session_state.file_content = uploaded_file.read()
+            st.rerun()
     
     # Sidebar for keyword management
     with st.sidebar:

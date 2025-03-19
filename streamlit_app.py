@@ -489,7 +489,15 @@ if show_upload:
 
 # Initialize or load data
 if uploaded_file is not None:
-    st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
+    try:
+        # Load the uploaded file into a DataFrame
+        st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
+        
+        # Save the DataFrame to the server, replacing the existing file
+        st.session_state.mood_history.to_csv(CSV_FILE, index=False)
+        st.success(f"File '{CSV_FILE}' has been successfully replaced with the uploaded data.")
+    except Exception as e:
+        st.error(f"An error occurred while processing the file: {e}")
 else:
     if os.path.exists(CSV_FILE):
         st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])

@@ -185,17 +185,24 @@ def main():
         st.session_state.show_confirmation = False
  
     # Download button
-    if st.button("Download Saved File"):
-        if st.session_state.file_content:
-            st.download_button(
-                label="Download aiRecord.txt",
-                data=st.session_state.file_content,
-                file_name="aiRecord.txt",
-                mime="text/plain"
-            )
+    col1, col2= st.columns(2)
+    with col1:
+        if st.button("Download Saved File"):
+            if st.session_state.file_content:
+                st.download_button(
+                    label="Download aiRecord.txt",
+                    data=st.session_state.file_content,
+                    file_name="aiRecord.txt",
+                    mime="text/plain"
+                )
         else:
             st.error("No file found to download.")
 
+    with col2:
+        if st.checkbox("show all records"):
+            if st.session_state.file_content:
+                st.code(st.session_state.file_content)
+                
     # Search functionality
     st.subheader("Search for Information")
     search_phrase = st.text_input(

@@ -477,7 +477,7 @@ MOOD_EMOJIS = {
     'Neutral': '😐'
 }
 
-st.set_page_config(page_title="Mood Diary", page_icon="📔")
+#st.set_page_config(page_title="Mood Diary", page_icon="📔")
 st.title("📔 Daily Mood Diary")
 st.write("Document your daily mood with two sentences!")
 

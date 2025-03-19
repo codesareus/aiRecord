@@ -458,6 +458,7 @@ def main():
 if __name__ == "__main__":
     main()
 
+
 import streamlit as st
 from textblob import TextBlob
 import pandas as pd
@@ -495,6 +496,13 @@ if uploaded_file is not None:
         # Load the uploaded file into a DataFrame
         st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
         
+        # Ensure the Date column is timezone-aware in Chicago time
+        st.session_state.mood_history["Date"] = (
+            st.session_state.mood_history["Date"]
+            .dt.tz_localize("UTC")  # Assume uploaded dates are in UTC
+            .dt.tz_convert(CHICAGO_TZ)  # Convert to Chicago time
+        )
+        
         # Save the DataFrame to the server, replacing the existing file
         st.session_state.mood_history.to_csv(CSV_FILE, index=False)
         st.success(f"File '{CSV_FILE}' has been successfully replaced with the uploaded data.")
@@ -503,6 +511,12 @@ if uploaded_file is not None:
 else:
     if os.path.exists(CSV_FILE):
         st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])
+        # Ensure the Date column is timezone-aware in Chicago time
+        st.session_state.mood_history["Date"] = (
+            st.session_state.mood_history["Date"]
+            .dt.tz_localize("UTC")  # Assume stored dates are in UTC
+            .dt.tz_convert(CHICAGO_TZ)  # Convert to Chicago time
+        )
     else:
         st.session_state.mood_history = pd.DataFrame(columns=[
             "Date", "Sentence 1", "Sentence 2", 
@@ -585,7 +599,7 @@ if submitted_today:
 if not st.session_state.mood_history.empty:
     st.subheader("Your Mood History")
     display_df = st.session_state.mood_history.tail(5).copy()
-    display_df["Date"] = pd.to_datetime(display_df["Date"]).dt.tz_convert(CHICAGO_TZ).dt.strftime("%Y-%m-%d")  # Convert to Chicago time
+    display_df["Date"] = display_df["Date"].dt.tz_convert(CHICAGO_TZ).dt.strftime("%Y-%m-%d")  # Convert to Chicago time
     st.dataframe(display_df.style.format({"Mood Score": "{:.2f}"}))
 
     st.subheader("Mood Timeline (Current Month)")
@@ -598,13 +612,15 @@ if not st.session_state.mood_history.empty:
     
     if not monthly_data.empty:
         fig, ax = plt.subplots(figsize=(10, 4))
-        ax.plot(pd.to_datetime(monthly_data["Date"]), monthly_data["Mood Score"], 
+        # Convert dates to Chicago time for plotting
+        monthly_data["Date"] = monthly_data["Date"].dt.tz_convert(CHICAGO_TZ)
+        ax.plot(monthly_data["Date"], monthly_data["Mood Score"], 
                 marker='o', linestyle='-', color='skyblue', label="Mood Score")
         
-        for date, score, emoji in zip(pd.to_datetime(monthly_data["Date"]), monthly_data["Mood Score"], monthly_data["Emoji"]):
+        for date, score, emoji in zip(monthly_data["Date"], monthly_data["Mood Score"], monthly_data["Emoji"]):
             ax.text(date, score + 0.02, emoji, fontsize=12, ha='center', va='bottom', color="orange")
         
-        ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%d'))
+        ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%d'))  # Format as day of month
         plt.xticks(rotation=45)
         ax.set_xlabel("Day of Month")
         ax.set_ylabel("Mood Score")

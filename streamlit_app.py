@@ -187,10 +187,10 @@ def main():
     upload = st.checkbox("uploade local record")
     if upload:
         uploaded_file = st.file_uploader("Upload your mood history TXT", type=["txt"])
-    if uploaded_file is not None:
+        if uploaded_file is not None:
     # Read the file content as text
         #text_content = uploaded_file.getvalue().decode()
-        st.session_state.file_content = uploaded_file.read()
+            st.session_state.file_content = uploaded_file.read()
     
     # Sidebar for keyword management
     with st.sidebar:

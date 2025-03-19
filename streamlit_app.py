@@ -174,7 +174,7 @@ def main():
         height=300
     )
 
-    st.code(f"{session_state.file_content.splitline[0]}...{session_state.file_content[-20:]}")
+    st.code(f"{st.session_state.file_content.splitline[0]}...{st.session_state.file_content[-20:]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

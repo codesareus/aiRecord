@@ -466,6 +466,9 @@ import os
 from datetime import datetime
 import pytz
 
+# Define the America/Chicago time zone
+CHICAGO_TZ = pytz.timezone("America/Chicago")
+
 CSV_FILE = "mood_history.csv"
 MOOD_EMOJIS = {
     'Happy': '😊', 
@@ -477,7 +480,6 @@ MOOD_EMOJIS = {
     'Neutral': '😐'
 }
 
-#st.set_page_config(page_title="Mood Diary", page_icon="📔")
 st.title("📔 Daily Mood Diary")
 st.write("Document your daily mood with two sentences!")
 
@@ -510,7 +512,7 @@ else:
 st.write("## Daily Entry")
 
 # Determine if today's entry exists
-today_date = datetime.now().date()
+today_date = datetime.now(CHICAGO_TZ).date()  # Use Chicago time zone
 submitted_today = False
 if not st.session_state.mood_history.empty and 'Date' in st.session_state.mood_history:
     submitted_today = today_date in pd.to_datetime(st.session_state.mood_history["Date"]).dt.date.values
@@ -538,7 +540,7 @@ def analyze_mood(sentence1, sentence2):
 
 if submitted and sentence1.strip() and sentence2.strip():
     mood, score, emoji = analyze_mood(sentence1, sentence2)
-    today = datetime.now()
+    today = datetime.now(CHICAGO_TZ)  # Use Chicago time zone
     
     new_entry = {
         "Date": today,
@@ -583,12 +585,12 @@ if submitted_today:
 if not st.session_state.mood_history.empty:
     st.subheader("Your Mood History")
     display_df = st.session_state.mood_history.tail(5).copy()
-    display_df["Date"] = pd.to_datetime(display_df["Date"]).dt.strftime("%Y-%m-%d")
+    display_df["Date"] = pd.to_datetime(display_df["Date"]).dt.tz_convert(CHICAGO_TZ).dt.strftime("%Y-%m-%d")  # Convert to Chicago time
     st.dataframe(display_df.style.format({"Mood Score": "{:.2f}"}))
 
     st.subheader("Mood Timeline (Current Month)")
-    current_month = datetime.now().month
-    current_year = datetime.now().year
+    current_month = datetime.now(CHICAGO_TZ).month  # Use Chicago time zone
+    current_year = datetime.now(CHICAGO_TZ).year  # Use Chicago time zone
 
     monthly_data = st.session_state.mood_history[
         (pd.to_datetime(st.session_state.mood_history["Date"]).dt.month == current_month) &
@@ -606,7 +608,7 @@ if not st.session_state.mood_history.empty:
         plt.xticks(rotation=45)
         ax.set_xlabel("Day of Month")
         ax.set_ylabel("Mood Score")
-        ax.set_title(f"Mood Timeline ({datetime.now().strftime('%B %Y')})")
+        ax.set_title(f"Mood Timeline ({datetime.now(CHICAGO_TZ).strftime('%B %Y')})")  # Use Chicago time zone
         ax.grid(True)
         st.pyplot(fig)
     else:

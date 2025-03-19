@@ -193,9 +193,6 @@ def main():
             text_content = uploaded_file.read().decode('utf-8')
             st.session_state.file_content = text_content
             
-            # Display   the file content
-            st.code(text_content)
-            
             # Update the server file "aiRecord.txt"
             try:
                 with open("aiRecord.txt", "w") as server_file:
@@ -308,18 +305,25 @@ def main():
         st.success("Text saved successfully!")
         st.button("ClearInput", on_click=clear_text)
         st.session_state.show_confirmation = False
- 
-    # Download button
-    if st.button("Download Saved File"):
-        if st.session_state.file_content:
-            st.download_button(
-                label="Download aiRecord.txt",
-                data=st.session_state.file_content,
-                file_name="aiRecord.txt",
-                mime="text/plain"
-            )
-        else:
-            st.error("No file found to download.")
+
+    co1, col2 = st.columns(2)
+    with col1: 
+        # Download button
+        if st.button("Download Saved File"):
+            if st.session_state.file_content:
+                st.download_button(
+                    label="Download aiRecord.txt",
+                    data=st.session_state.file_content,
+                    file_name="aiRecord.txt",
+                    mime="text/plain"
+                )
+            else:
+                st.error("No file found to download.")
+
+    with col2: 
+        if st.button("Copy all records"):
+            if st.session_state.file_content:
+                st.code(st.session_state.file_content)
 
 
 #################

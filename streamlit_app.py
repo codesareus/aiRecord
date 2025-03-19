@@ -178,7 +178,7 @@ def main():
     if recentR:
         st.code(f"Recent: {st.session_state.file_content[-1900:]}")
     else:
-        st.code(f"Last: {st.session_state.file_content[-20:-1]}...{st.session_state.file_content[:30]}")
+        st.code(f"Last: {st.session_state.file_content[-20:-1]}...{st.session_state.file_content.split("\n\n")[0]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

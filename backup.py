@@ -138,66 +138,57 @@ def main():
             value="\n".join(st.session_state.keyword_list),
             height=150
         )
-
+    
+        # Save Keywords button
         if st.button("Save Keywords"):
             keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
             with open("keywords.txt", "w") as file:
                 file.write("\n".join(keywords))
             st.session_state.keyword_list = keywords
             st.success("Keywords saved successfully!")
-##########################
-        #st.subheader("Saved Keywords")
-
-# Assuming keyword_list is stored in session state
-        if 'keyword_list' not in st.session_state:
-            st.session_state.keyword_list = []
-
-# Display subheader
+    
         st.subheader("Saved Keywords")
 
-# Define the number of columns you want per row
-        columns_per_row = 4  # You can adjust this based on your preference
-
-# Calculate the number of rows needed
-        num_keywords = len(st.session_state.keyword_list)
-        num_rows = -(-num_keywords // columns_per_row)  # Ceiling division to determine rows
-
-# Loop through the keywords and display them in a grid
-        for row in range(num_rows):
-    # Create columns for each row
-            cols = st.columns(columns_per_row)
+    with st.sidebar:
+    # Arrange saved keywords in columns
+        if st.session_state.keyword_list:
+            num_columns = 3  # Number of columns to display buttons in
+            keyword_chunks = [st.session_state.keyword_list[i:i + num_columns] for i in range(0, len(st.session_state.keyword_list), num_columns)]
     
-    # Iterate over the columns and place buttons inside
-            for col_idx in range(columns_per_row):
-                keyword_index = row * columns_per_row + col_idx
-        
-        # Check if there are still keywords left to display
-                if keyword_index < num_keywords:
-                    keyword = st.session_state.keyword_list[keyword_index]
-            
-            # Place the button inside the column
-                    with cols[col_idx]:
-                        if st.button(keyword):
+            for chunk in keyword_chunks:
+                cols = st.columns(num_columns)
+                for i, keyword in enumerate(chunk):
+                    with cols[i]:
+                        if st.button(keyword, key=f"keyword_{keyword}"):
                             st.session_state.search_phrase = keyword
                             st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
                             st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
                             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-        
-       # for keyword in st.session_state.keyword_list:
-            #if st.button(keyword):
-                #st.session_state.search_phrase = keyword
-               # st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
-               # st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
-              #  st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
 
+    ## upload
+    
+    show_upload = st.checkbox("Upload local records", value=False)
+    
+    if show_upload:
+        uploaded_file = st.file_uploader("Choose txt file", type=["txt"])
+        
+        if uploaded_file is not None:
+            st.session_state.file_content = uploaded_file.read().decode('utf-8')
+            
     # Text input area
     user_text = st.text_area(
-        "Enter your text (max 5000 characters):",
+        "Enter your text (max 2000 characters):",
         value=st.session_state.text_area_content,
-        max_chars=5000,
+        max_chars=2000,
         key="text_area",
         height=300
     )
+
+    recentR= st.checkbox("show recent records")
+    if recentR:
+        st.code(f"Recent: {st.session_state.file_content[-1900:]}")
+    else:
+        st.code(f"Last: {st.session_state.file_content[-20:-1]}...{st.session_state.file_content.split("\n\n")[0]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
@@ -221,20 +212,24 @@ def main():
         st.session_state.show_confirmation = False
  
     # Download button
-    if st.button("Download Saved File"):
-        if st.session_state.file_content:
-            st.download_button(
-                label="Download aiRecord.txt",
-                data=st.session_state.file_content,
-                file_name="aiRecord.txt",
-                mime="text/plain"
-            )
-        else:
-            st.error("No file found to download.")
+    col1, col2= st.columns(2)
+    with col1:
+        if st.button("Download Saved File"):
+            if st.session_state.file_content:
+                st.download_button(
+                    label="Download aiRecord.txt",
+                    data=st.session_state.file_content,
+                    file_name="aiRecord.txt",
+                    mime="text/plain"
+                )
+            else:
+                st.error("No file found to download.")
 
-
-#################
-
+    with col2:
+        if st.checkbox("show all records"):
+            if st.session_state.file_content:
+                st.code(st.session_state.file_content)
+                
     # Search functionality
     st.subheader("Search for Information")
     search_phrase = st.text_input(
@@ -302,15 +297,9 @@ def main():
                 truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters
 
                 with st.expander(truncated_text):
-                    
+                    # Ensure highlights work when expanded
                     cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
-                    # ######## Create a text area for user input
-                    edited_text = st.text_area("expanded view:", cleaned_paragraph, height=400)
-                    # #####Display the rendered HTML。#
-                    #st.markdown("### Preview:")
-                    ####### Render the edited text with markdown
-                    #st.markdown(edited_text, unsafe_allow_html=True)      
-                    #st.markdown(cleaned_paragraph, unsafe_allow_html=True)
+                    st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:
         st.warning("No matching paragraphs found.")

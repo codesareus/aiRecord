@@ -174,7 +174,7 @@ def main():
         height=300
     )
 
-    st.code(f"{st.session_state.file_content[:30]}...{st.session_state.file_content[-20:]}")
+    st.code(f"Last: {st.session_state.file_content[-20:]}...Reboot: {st.session_state.file_content[:30]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

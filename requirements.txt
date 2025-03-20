@@ -11,6 +11,5 @@ pandas
 pandas_market_calendars
 textblob
 requests
-time
-matplotlib.animation 
+time 
 tempfile

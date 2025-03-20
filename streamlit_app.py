@@ -233,7 +233,7 @@ def main():
                 st.error("No file found to download.")
 
     with col2:
-        if st.checkbox("show today"):
+        if st.checkbox("show today", value=True):
             if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)

@@ -319,6 +319,8 @@ if __name__ == "__main__":
     main()
 
 #######
+
+st.image("lotus.jpeg")
 #from textblob import TextBlob
 import pandas as pd
 import matplotlib.pyplot as plt

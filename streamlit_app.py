@@ -171,9 +171,12 @@ def main():
     
     if show_upload:
         uploaded_file = st.file_uploader("Choose txt file", type=["txt"])
-        
         if uploaded_file is not None:
             st.session_state.file_content = uploaded_file.read().decode('utf-8')
+            # Save uploaded file as "aiRecord.txt" on server
+            with open("aiRecord.txt", "wb") as f:
+                f.write(uploaded_file.getbuffer())
+                st.success("aiRecord.txt saved successfully!")
             
     # Text input area
     user_text = st.text_area(
@@ -335,14 +338,15 @@ st.write("Document your daily mood with two sentences!")
 
 # Collapsible upload block
 show_upload = st.checkbox("Upload custom mood history")
-uploaded_file = None
+
 if show_upload:
     uploaded_file = st.file_uploader("Upload your mood history CSV", type=["csv"])
-
-# Initialize or load data
-if uploaded_file is not None:
-    st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
-    st.session_state.mood_history.to_csv(CSV_FILE, = False)
+    if uploaded_file is not None:
+        st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
+        # Save uploaded file as "mood_history.csv" on server
+        with open("mood_history.csv", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success("CSV file saved successfully!")
 else:
     if os.path.exists(CSV_FILE):
         st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])
@@ -754,4 +758,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

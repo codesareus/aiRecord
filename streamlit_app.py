@@ -458,3 +458,299 @@ if not st.session_state.mood_history.empty:
 
 st.markdown("---")
 st.caption("Your personal mood diary - Reflect, remember, and grow.")
+
+#########
+import time
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+import tempfile
+import os
+
+# Set up the Streamlit app title
+st.title("Fireworks Animation")
+
+# Define the shapes of letters and numbers with improved coordinates
+def get_letter_shapes():
+    # Coordinates for the characters (scaled and centered)
+    H = np.array([
+        [-0.8, -1], [-0.8, 1],  # Left vertical
+        [0.8, -1], [0.8, 1],    # Right vertical
+        [-0.8, 0], [0.8, 0]     # Horizontal bar
+    ]) * 1.5
+
+    Six = np.array([
+        [1, 1],          # Top start
+        [-1, 0.5],       # Left curve top
+        [-1, -0.5],      # Left curve bottom
+        [0, -1],         # Bottom center
+        [1, -0.5],       # Right curve bottom
+        [0.5, 0],        # Inner curve
+        [0, 0.5]         # Closing point
+    ]) * 1.5
+    
+    Zero = np.array([
+        [0, 1], [-0.5, 0.87], [-0.87, 0.5], [-1, 0],  # Left semicircle
+        [-0.87, -0.5], [-0.5, -0.87], [0, -1],        # Bottom semicircle
+        [0.5, -0.87], [0.87, -0.5], [1, 0],           # Right semicircle
+        [0.87, 0.5], [0.5, 0.87], [0, 1]              # Top semicircle
+    ]) * 1.5
+
+    # Points for "Y"
+    Y = np.array([[-1, 1], [0, 0], [0, -1], [0.25, 0], [1, 1]]) * 2
+
+    W = np.array([[-1, 0.75], [-0.5, -0.75], [0, 0], [0.5, -0.75], [1, 0.75]]) * 2
+
+    # Define the shape for '1'
+    One = np.array([
+        [0, 1],    # Top of the '1'
+        [0, -1],   # Bottom of the '1'
+        [-0.3, 0.8],  # Small angled stroke at top left
+        [0, 1],    # Connect back to top
+        [0.3, 0.8],   # Small angled stroke at top right
+        [0, 1],    # Back to top
+        [-0.2, -1],  # Bottom left of base
+        [0.2, -1]    # Bottom right of base
+    ]) * 1.5
+
+    # Corrected shape for 'K'
+    K = np.array([
+        [-1, 1], [-1, -1], [-1, 0],  # Upper diagonal arm
+        [1, 1], [0, 0], [1, -1]   # Lower diagonal arm
+    ]) * 1.5
+
+    # Edges for each character (explicit connections between points)
+    letter_edges = {
+        'H': [(0, 1), (2, 3), (4, 5)],  # Connect left, right, and middle bars
+        'A': [(0, 1), (1, 2), (2, 3), (4, 5)],  # Triangle and horizontal bar
+        'P': [(0, 1), (1, 2), (2, 3), (3, 4), (4, 0)],  # Circular P
+        'Y': [(0, 1), (1, 2), (2, 3), (2, 4)],  # Correct "Y" shape
+        'W': [(0, 1), (1, 2), (2, 3), (3, 4)],  # Peaks of M
+        'S': [(0,1), (1,2), (2,3), (3,4), (4,5), (5,6), (6,0)],  # Continuous 6 shape
+        'Z': [(0,1), (1,2), (2,3), (3,4), (4,5), (5,6), (6,7), (7,8), (8,9), (9,10), (10,11), (11,0)],  # Full circle
+        '1': [(0, 1), (2, 3), (3, 4), (4, 5), (6, 7)],  # Vertical stroke, angled top, and base
+        'K': [(0, 1), (2, 3), (4, 5)]  # Spine and two diagonal arms
+    }
+
+    return {
+        'H': H, 
+        'A': np.array([[-1, -1], [-0.5, 1], [0.5, 1], [1, -1], [-0.5, 0], [0.5, 0]]) * 2,
+        'P': np.array([[-1, -1], [-1, 1], [0, 1], [1, 0], [-1, 0]]) * 2,
+        'Y': Y,  # Updated "Y" points
+        'W': W,
+        'S': Six,
+        'Z': Zero,
+        '1': One,  # Add '1' to the returned dictionary
+        'K': K     # Add 'K' to the returned dictionary
+    }, letter_edges
+
+# Modified firework generation with better particle control
+def generate_firework(ax, x_center, y_center, is_word=False, character=None):
+    letter_shapes, letter_edges = get_letter_shapes()
+    if is_word and character:
+        num_particles_per_point = 15  # Increased particle density
+        letter_shape = letter_shapes[character]
+        edges = letter_edges[character]
+        x, y = [], []
+        
+        # Add intermediate points for better shape definition
+        for edge in edges:
+            start_idx, end_idx = edge
+            start = letter_shape[start_idx]
+            end = letter_shape[end_idx]
+            points = np.linspace(start, end, 5)
+            for point in points:
+                offsets = np.random.normal(loc=point, scale=0.1, size=(num_particles_per_point, 2))
+                x.extend(offsets[:, 0] + x_center)
+                y.extend(offsets[:, 1] + y_center)
+        
+        scatter = ax.scatter(x, y, s=20, c=np.random.rand(3,), alpha=0.95, edgecolors="none")
+    else:
+        num_particles = 200
+        num_center_particles = int(num_particles * 0.2)
+        num_outer_particles = num_particles - num_center_particles
+        center_x = np.random.normal(loc=x_center, scale=0.5, size=num_center_particles)
+        center_y = np.random.normal(loc=y_center, scale=0.5, size=num_center_particles)
+        angles = np.linspace(0, 2 * np.pi, num_outer_particles)
+        radii = np.random.uniform(1, 4, size=num_outer_particles)
+        outer_x = x_center + radii * np.cos(angles)
+        outer_y = y_center + radii * np.sin(angles)
+        x = np.concatenate([center_x, outer_x])
+        y = np.concatenate([center_y, outer_y])
+        scatter = ax.scatter(x, y, s=15, c=np.random.rand(3,), alpha=0.9, edgecolors="none")
+    return scatter
+
+# Function to update the fireworks animation
+def update(frame, ascending_fireworks, exploded_scatters, ax, series_launched, runner_info):
+    # Launch the 1000K series at frame 50
+    if frame == 125 and not series_launched[0]:
+        series_letters = ['1','Z','Z','Z','K']
+        num_letters = len(series_letters)
+        explosion_heights = np.linspace(20, 20 + num_letters*1.5, num_letters)
+        series_x = np.linspace(-18, 18, num_letters)
+        for i, char in enumerate(series_letters):
+            scatter = ax.scatter(series_x[i], -5, s=10, c="white", alpha=0.8)
+            ascending_fireworks.append({
+                "scatter": scatter,
+                "x": series_x[i],
+                "y": -5,
+                "speed": 1.5,
+                "explosion_height": explosion_heights[i],
+                "character": char
+            })
+        series_launched[0] = True
+
+    # Update ascending fireworks
+    for firework in ascending_fireworks.copy():
+        firework["y"] += firework["speed"]
+        firework["scatter"].set_offsets([firework["x"], firework["y"]])
+        if firework["y"] >= firework["explosion_height"]:
+            if "character" in firework:
+                exploded_scatters.append(generate_firework(ax, firework["x"], firework["y"], is_word=True, character=firework["character"]))
+            else:
+                if np.random.rand() < 0.3:
+                    exploded_scatters.append(generate_firework(ax, firework["x"], firework["y"], is_word=True))
+                else:
+                    exploded_scatters.append(generate_firework(ax, firework["x"], firework["y"]))
+            firework["scatter"].remove()
+            ascending_fireworks.remove(firework)
+
+    # Update exploded fireworks particles
+    for scatter in exploded_scatters.copy():
+        offsets = scatter.get_offsets()
+        offsets[:, 1] -= 0.2
+        scatter.set_offsets(offsets)
+        current_alpha = scatter.get_alpha()
+        new_alpha = max(0.0, min(1.0, current_alpha - 0.02))
+        scatter.set_alpha(new_alpha)
+        if new_alpha <= 0:
+            scatter.remove()
+            exploded_scatters.remove(scatter)
+
+    # Add new ascending fireworks occasionally
+    if frame % 10 == 0 and not series_launched[0]:
+        x_start = np.random.uniform(-10, 10)
+        y_start = -5
+        explosion_height = np.random.uniform(15, 40)
+        speed = np.random.uniform(0.5, 1.0)
+        scatter = ax.scatter(x_start, y_start, s=10, c="white", alpha=0.8)
+        ascending_fireworks.append({
+            "scatter": scatter,
+            "x": x_start,
+            "y": y_start,
+            "speed": speed,
+            "explosion_height": explosion_height
+        })
+
+    # Launch the runner after the 1000K series is completed
+    if series_launched[0] and not runner_info['active'] and len(ascending_fireworks) == 0:
+        runner_info['active'] = True
+        runner_info['y_pos'] = -5
+        runner_info['x_pos'] = 0
+        runner_info['speed'] = 1.5
+        runner_info['pose'] = 0
+        runner_info['animation_counter'] = 0
+        
+        # Create runner's graphical elements (scaled 5x)
+        runner_info['head'] = plt.Circle((runner_info['x_pos'], runner_info['y_pos']), 
+                                    radius=1.5, 
+                                    color=runner_info['color'],  # Use custom color
+                                    zorder=10)
+        ax.add_patch(runner_info['head'])
+        
+        # Initialize body parts with custom color
+        runner_info['body'], = ax.plot([], [], color=runner_info['color'], lw=10, zorder=10)
+        runner_info['left_arm'], = ax.plot([], [], color=runner_info['color'], lw=10, zorder=10)
+        runner_info['right_arm'], = ax.plot([], [], color=runner_info['color'], lw=10, zorder=10)
+        runner_info['left_leg'], = ax.plot([], [], color=runner_info['color'], lw=10, zorder=10)
+        runner_info['right_leg'], = ax.plot([], [], color=runner_info['color'], lw=10, zorder=10)
+
+    # Update runner's position and animation
+    if runner_info['active']:
+        runner_info['y_pos'] += runner_info['speed']
+        runner_info['animation_counter'] += 1
+        
+        if runner_info['animation_counter'] >= 5:
+            runner_info['pose'] = 1 - runner_info['pose']
+            runner_info['animation_counter'] = 0
+
+        x = runner_info['x_pos']
+        y = runner_info['y_pos']
+        
+        # Update head position
+        runner_info['head'].center = (x, y)
+        
+        # Update body position (scaled 5x)
+        runner_info['body'].set_data([x, x], [y - 2.5, y - 7.5])
+        
+        # Update arms and legs based on pose
+        if runner_info['pose'] == 0:
+            runner_info['left_arm'].set_data([x - 2.5, x], [y - 2.5, y - 2.5])
+            runner_info['right_arm'].set_data([x + 2.5, x], [y - 2.5, y + 2.5])
+            runner_info['left_leg'].set_data([x - 2.5, x - 2.5], [y - 7.5, y - 12.5])
+            runner_info['right_leg'].set_data([x + 2.5, x + 2.5], [y - 7.5, y - 5.0])
+        else:
+            runner_info['left_arm'].set_data([x - 2.5, x], [y - 2.5, y + 2.5])
+            runner_info['right_arm'].set_data([x + 2.5, x], [y - 2.5, y - 2.5])
+            runner_info['left_leg'].set_data([x - 2.5, x - 2.5], [y - 7.5, y - 5.0])
+            runner_info['right_leg'].set_data([x + 2.5, x + 2.5], [y - 7.5, y - 12.5])
+
+        # Hide runner when out of bounds
+        if runner_info['y_pos'] > 40:
+            runner_info['head'].center = (100, 100)  # Move off-screen
+            runner_info['body'].set_data([], [])
+            runner_info['left_arm'].set_data([], [])
+            runner_info['right_arm'].set_data([], [])
+            runner_info['left_leg'].set_data([], [])
+            runner_info['right_leg'].set_data([], [])
+            runner_info['active'] = False
+
+def main():
+    fig, ax = plt.subplots(figsize=(8, 6))
+    fig.patch.set_facecolor("black")
+    ax.set_facecolor("black")
+    ax.set_xlim(-30, 30)
+    ax.set_ylim(-10, 40)
+    ax.axis("off")
+
+    ascending_fireworks = []
+    exploded_scatters = []
+    series_launched = [False]  # Track if series has been launched
+    runner_info = {
+        'active': False,
+        'y_pos': -5,
+        'x_pos': 0,
+        'speed': 1.5,
+        'pose': 0,
+        'animation_counter': 0,
+        'color': 'cyan',  # Customizable runner color
+        'head': None,
+        'body': None,
+        'left_arm': None,
+        'right_arm': None,
+        'left_leg': None,
+        'right_leg': None
+    }
+
+    ani = FuncAnimation(fig, update, frames=200, fargs=(ascending_fireworks, exploded_scatters, ax, series_launched, runner_info), interval=50, blit=False)
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".gif") as tmpfile:
+        try:
+            ani.save(tmpfile.name, writer="pillow", fps=20)
+            gif_path = tmpfile.name
+        except Exception as e:
+            st.error(f"Failed to save animation: {e}")
+            return
+
+    if st.button("Play Fireworks"):
+        st.write("Playing fireworks...")
+        st.image(gif_path, use_container_width=True)
+        time.sleep(40)
+
+    if os.path.exists(gif_path):
+        os.unlink(gif_path)
+
+if __name__ == "__main__":
+    main()
+

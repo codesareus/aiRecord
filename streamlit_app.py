@@ -232,9 +232,9 @@ def main():
     with col2:
         if st.checkbox("show today"):
             if st.session_state.text_area_content:
-                st.text_area("File Content", st.session_state.text_area_content, height=160)
-        else:
-            st.code("peace")
+                st.code(st.session_state.text_area_content)
+            else:
+                st.code("peace")
                 
     # Search functionality
     st.subheader("Search for Information")

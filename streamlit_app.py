@@ -234,7 +234,7 @@ def main():
 
     with col2:
         if st.checkbox("show today"):
-            if st.session_state.todayLast"
+            if st.session_state.todayLast:
                 st.code(st.session_state.todayLast)
                 
     # Search functionality

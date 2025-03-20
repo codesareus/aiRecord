@@ -409,20 +409,20 @@ elif submitted:
 
 if submitted_today:
     st.subheader("Today's Mood")
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(3)
     today_entry = st.session_state.mood_history.iloc[-1]
     with col1:
         st.metric("Predicted Mood", f"{today_entry['Predicted Mood']} {today_entry['Emoji']}")
     with col2:
         st.metric("Mood Score", f"{today_entry['Mood Score']:.2f}")
-    with col3:
-        csv = st.session_state.mood_history.to_csv(index=False).encode('utf-8')
-        st.download_button(
+        
+csv = st.session_state.mood_history.to_csv(index=False).encode('utf-8')
+st.download_button(
             label="Download History",
             data=csv,
             file_name="mood_history.csv",
             mime="text/csv"
-        )
+        )     
 
 if not st.session_state.mood_history.empty:
     st.subheader("Your Mood History")

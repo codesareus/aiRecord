@@ -3,7 +3,7 @@ from gtts import gTTS
 from datetime import datetime, timedelta
 import pytz
 import re  # Import regex
-
+#import os
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
 FILE_NAME = "aiRecord.txt"
@@ -315,13 +315,10 @@ if __name__ == "__main__":
     main()
 
 #######
-import streamlit as st
-from textblob import TextBlob
+#from textblob import TextBlob
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
 from datetime import datetime
-import pytz
 
 CSV_FILE = "mood_history.csv"
 MOOD_EMOJIS = {
@@ -468,12 +465,10 @@ st.caption("Your personal mood diary - Reflect, remember, and grow.")
 
 #########
 import time
-import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import tempfile
-import os
+#import tempfile
 
 # Set up the Streamlit app title
 st.title("Fireworks Animation")

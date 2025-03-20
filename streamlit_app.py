@@ -444,7 +444,7 @@ if not st.session_state.mood_history.empty:
                 marker='o', linestyle='-', color='skyblue', label="Mood Score")
         
         for date, score, emoji in zip(pd.to_datetime(monthly_data["Date"]), monthly_data["Mood Score"], monthly_data["Emoji"]):
-            ax.text(date, score + 0.001, emoji, fontsize=12, ha='center', va='bottom', color="orange")
+            ax.text(date, score + 0.001, emoji, fontsize=16, ha='center', va='bottom', color="orange")
         
         ax.xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%d'))
         plt.xticks(rotation=45)

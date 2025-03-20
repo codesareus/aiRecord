@@ -320,7 +320,7 @@ if __name__ == "__main__":
 
 #######
 
-st.image("lotus.jpeg")
+st.image("lotus.jpg",width=705)
 #from textblob import TextBlob
 import pandas as pd
 import matplotlib.pyplot as plt

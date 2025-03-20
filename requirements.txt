@@ -9,7 +9,4 @@ matplotlib
 scikit-learn
 pandas
 pandas_market_calendars
-textblob
 requests
-time 
-tempfile

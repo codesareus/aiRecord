@@ -354,7 +354,7 @@ else:
 st.write("## Daily Entry")
 
 # Determine if today's entry exists
-today_date = datetime.now().date()
+today_date = datetime.now(midwest).date()
 submitted_today = False
 if not st.session_state.mood_history.empty and 'Date' in st.session_state.mood_history:
     submitted_today = today_date in pd.to_datetime(st.session_state.mood_history["Date"]).dt.date.values

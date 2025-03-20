@@ -233,8 +233,6 @@ def main():
         if st.checkbox("show today"):
             if st.session_state.text_area_content:
                 st.code(st.session_state.text_area_content)
-            else:
-                st.code("peace")
                 
     # Search functionality
     st.subheader("Search for Information")

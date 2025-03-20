@@ -409,7 +409,7 @@ elif submitted:
 
 if submitted_today:
     st.subheader("Today's Mood")
-    col1, col2 = st.columns(3)
+    col1, col2 = st.columns(2)
     today_entry = st.session_state.mood_history.iloc[-1]
     with col1:
         st.metric("Predicted Mood", f"{today_entry['Predicted Mood']} {today_entry['Emoji']}")

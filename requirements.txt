@@ -11,3 +11,6 @@ pandas
 pandas_market_calendars
 textblob
 requests
+time
+from matplotlib.animation import FuncAnimation
+import tempfile

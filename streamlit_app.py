@@ -131,57 +131,56 @@ def main():
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
 
-
-
+    col1,col2 = st.columns(2)
+    with col1:
     # Sidebar for keyword management
-    showSideBar = st.checkbox("showSideBar")
-    if showSideBar:
-        with st.sidebar:
-            st.subheader("Keyword List")
-            keyword_input = st.text_area(
-                "Enter keywords (one per line):",
-                value="\n".join(st.session_state.keyword_list),
-                height=150
-            )
+        showSideBar = st.checkbox("showSideBar")
+        if showSideBar:
+            with st.sidebar:
+                st.subheader("Keyword List")
+                keyword_input = st.text_area(
+                    "Enter keywords (one per line):",
+                    value="\n".join(st.session_state.keyword_list),
+                    height=150
+                )
+            
+                # Save Keywords button
+                if st.button("Save Keywords"):
+                    keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
+                    with open("keywords.txt", "w") as file:
+                        file.write("\n".join(keywords))
+                    st.session_state.keyword_list = keywords
+                    st.success("Keywords saved successfully!")
+            
+                st.subheader("Saved Keywords")
         
-            # Save Keywords button
-            if st.button("Save Keywords"):
-                keywords = [k.strip() for k in keyword_input.splitlines() if k.strip()]
-                with open("keywords.txt", "w") as file:
-                    file.write("\n".join(keywords))
-                st.session_state.keyword_list = keywords
-                st.success("Keywords saved successfully!")
-        
-            st.subheader("Saved Keywords")
-    
-        with st.sidebar:
-        # Arrange saved keywords in columns
-            if st.session_state.keyword_list:
-                num_columns = 3  # Number of columns to display buttons in
-                keyword_chunks = [st.session_state.keyword_list[i:i + num_columns] for i in range(0, len(st.session_state.keyword_list), num_columns)]
-        
-                for chunk in keyword_chunks:
-                    cols = st.columns(num_columns)
-                    for i, keyword in enumerate(chunk):
-                        with cols[i]:
-                            if st.button(keyword, key=f"keyword_{keyword}"):
-                                st.session_state.search_phrase = keyword
-                                st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
-                                st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
-                                st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-
+            with st.sidebar:
+            # Arrange saved keywords in columns
+                if st.session_state.keyword_list:
+                    num_columns = 3  # Number of columns to display buttons in
+                    keyword_chunks = [st.session_state.keyword_list[i:i + num_columns] for i in range(0, len(st.session_state.keyword_list), num_columns)]
+            
+                    for chunk in keyword_chunks:
+                        cols = st.columns(num_columns)
+                        for i, keyword in enumerate(chunk):
+                            with cols[i]:
+                                if st.button(keyword, key=f"keyword_{keyword}"):
+                                    st.session_state.search_phrase = keyword
+                                    st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
+                                    st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
+                                    st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+    with col2:
     ## upload
-    
-    show_upload = st.checkbox("Upload local records", value=False)
-    
-    if show_upload:
-        uploaded_file = st.file_uploader("Choose txt file", type=["txt"])
-        if uploaded_file is not None:
-            st.session_state.file_content = uploaded_file.read().decode('utf-8')
-            # Save uploaded file as "aiRecord.txt" on server
-            with open("aiRecord.txt", "wb") as f:
-                f.write(uploaded_file.getbuffer())
-                st.success("aiRecord.txt saved successfully!")
+        show_upload = st.checkbox("Upload local records", value=False)
+        
+        if show_upload:
+            uploaded_file = st.file_uploader("Choose txt file", type=["txt"])
+            if uploaded_file is not None:
+                st.session_state.file_content = uploaded_file.read().decode('utf-8')
+                # Save uploaded file as "aiRecord.txt" on server
+                with open("aiRecord.txt", "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                    st.success("aiRecord.txt saved successfully!")
             
     # Text input area
     user_text = st.text_area(

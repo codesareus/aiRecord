@@ -342,6 +342,7 @@ if show_upload:
 # Initialize or load data
 if uploaded_file is not None:
     st.session_state.mood_history = pd.read_csv(uploaded_file, parse_dates=["Date"])
+    st.session_state.mood_history.to_csv(CSV_FILE, = False)
 else:
     if os.path.exists(CSV_FILE):
         st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])

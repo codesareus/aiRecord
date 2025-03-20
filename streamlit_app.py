@@ -112,7 +112,7 @@ def main():
     if "text_area_content" not in st.session_state:
         st.session_state.text_area_content = ""
     if "todayLast" not in st.session_state:
-        st.session_state.todayLast = "peace"
+        st.session_state.todayLast = ""
     if "matching_paragraphs" not in st.session_state:
         st.session_state.matching_paragraphs = []
     if "keyword_list" not in st.session_state:
@@ -234,7 +234,8 @@ def main():
 
     with col2:
         if st.checkbox("show today"):
-            st.code(st.session_state.todayLast)
+            if st.session_state.todayLast"
+                st.code(st.session_state.todayLast)
                 
     # Search functionality
     st.subheader("Search for Information")

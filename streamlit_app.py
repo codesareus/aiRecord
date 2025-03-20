@@ -232,7 +232,7 @@ def main():
     with col2:
         if st.checkbox("show all records"):
             if st.session_state.file_content:
-                st.write(st.session_state.file_content,height=80)
+                st.text_area("File Content", st.session_state.file_content, height=80)
                 
     # Search functionality
     st.subheader("Search for Information")

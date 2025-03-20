@@ -237,7 +237,7 @@ def main():
             if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-                st.code(st.session_state.matching_paragraphs)
+                #st.code(st.session_state.matching_paragraphs)
                 #st.rerun()
     # Search functionality
     st.subheader("Search for Information")

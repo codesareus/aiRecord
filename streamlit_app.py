@@ -22,6 +22,7 @@ def save_text_to_file(text, filename="aiRecord.txt"):
     # Update session state with new content
     with open(filename, "r") as file:
         st.session_state.file_content = file.read()
+        st.session_state.todayLast = text_with_timestamp
 
 # Function to search for keywords in the file content
 def search_keywords_in_file(keywords, file_content):
@@ -110,6 +111,8 @@ def main():
     # Initialize other session states
     if "text_area_content" not in st.session_state:
         st.session_state.text_area_content = ""
+    if "todayLast" not in st.session_state:
+        st.session_state.todayLast = "peace"
     if "matching_paragraphs" not in st.session_state:
         st.session_state.matching_paragraphs = []
     if "keyword_list" not in st.session_state:
@@ -231,8 +234,7 @@ def main():
 
     with col2:
         if st.checkbox("show today"):
-            if st.session_state.text_area_content:
-                st.code(st.session_state.text_area_content)
+            st.code(st.session_state.todayLast)
                 
     # Search functionality
     st.subheader("Search for Information")

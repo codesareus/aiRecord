@@ -320,6 +320,7 @@ if __name__ == "__main__":
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
+import tempfile
 
 CSV_FILE = "mood_history.csv"
 MOOD_EMOJIS = {

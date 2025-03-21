@@ -342,7 +342,7 @@ MOOD_EMOJIS = {
 #st.set_page_config(page_title="Mood Diary", page_icon="📔")
 st.title("📔 Daily Mood Diary")
 st.write("Document your daily mood with two sentences!")
-
+st.session_state.mood_history = pd.read_csv(CSV_FILE, parse_dates=["Date"])
 # Collapsible upload block
 show_upload = st.checkbox("Upload custom mood history")
 

@@ -327,6 +327,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime
 import tempfile
+import textblob
 
 CSV_FILE = "mood_history.csv"
 MOOD_EMOJIS = {

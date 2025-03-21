@@ -409,8 +409,8 @@ if submitted and sentence1.strip() and sentence2.strip():
     st.session_state.mood_history = pd.concat([st.session_state.mood_history, new_entry_df], ignore_index=True)
     
     # Save to server CSV only if no file was uploaded
-    if not show_upload:
-        new_entry_df.to_csv(CSV_FILE, mode='a', header=not os.path.exists(CSV_FILE), index=False)
+    #if not show_upload:
+    new_entry_df.to_csv(CSV_FILE, mode='a', header=not os.path.exists(CSV_FILE), index=False)
     
     st.success("Entry saved successfully!")
     st.balloons()
@@ -443,8 +443,9 @@ if not st.session_state.mood_history.empty:
     st.dataframe(display_df.style.format({"Mood Score": "{:.2f}"}))
 
     st.subheader("Mood Timeline (Current Month)")
-    current_month = datetime.now().month
-    current_year = datetime.now().year
+    ###### rev 3-21??? ok?. with midwest
+    current_month = datetime.now(midwest).month
+    current_year = datetime.now(midwest).year
 
     monthly_data = st.session_state.mood_history[
         (pd.to_datetime(st.session_state.mood_history["Date"]).dt.month == current_month) &

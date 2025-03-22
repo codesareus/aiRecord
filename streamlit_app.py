@@ -222,16 +222,16 @@ def main():
     # Download button
     col1, col2= st.columns(2)
     with col1:
-        if st.button("Download Saved File"):
-            if st.session_state.file_content:
-                st.download_button(
-                    label="Download aiRecord.txt",
-                    data=st.session_state.file_content,
-                    file_name="aiRecord.txt",
-                    mime="text/plain"
-                )
-            else:
-                st.error("No file found to download.")
+        #if st.button("Download Saved File"):
+        if st.session_state.file_content:
+            st.download_button(
+                label="Download aiRecord.txt",
+                data=st.session_state.file_content,
+                file_name="aiRecord.txt",
+                mime="text/plain"
+            )
+        else:
+            st.error("No file found to download.")
 
     with col2:
         if st.checkbox("show today", value=True):

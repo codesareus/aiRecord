@@ -184,16 +184,16 @@ def main():
             
     # Text input area
     user_text = st.text_area(
-        "Enter your text (max 2000 characters):",
+        "Enter your text (max 5000 characters):",
         value=st.session_state.text_area_content,
-        max_chars=2000,
+        max_chars=5000,
         key="text_area",
-        height=300
+        height=500
     )
 
     recentR= st.checkbox("show recent records")
     if recentR:
-        st.code(f"Recent: {st.session_state.file_content[-1900:]}")
+        st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     else:
         content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
         st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")

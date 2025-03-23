@@ -217,6 +217,7 @@ def main():
     with col4:
         if st.button("Show Recent"):
             st.session_state.text_area_content = st.session_state.text_area_contentR
+            st.session_state.showing = False
             st.rerun()
         
 # Speak button

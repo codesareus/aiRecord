@@ -120,8 +120,8 @@ def main():
         st.session_state.keyword_list = load_keyword_list()
     if "search_phrase" not in st.session_state:
         st.session_state.search_phrase = ""
-    if "speechFile" not in st.session_state:
-        st.session_state.speechFile = "speech.mp3"
+    if "fullText" not in st.session_state:
+        st.session_state.fullText = ""
 
 # Initialize session state variables
     
@@ -299,7 +299,9 @@ def main():
         if st.session_state.expand_all:
             full_text = "<br><br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
-    
+            plain_text = re.sub(r'<.*?>', '', full_text)
+            st.session_state.fullText = plain_text
+            
             # Copy button (removes HTML tags before copying)
             if st.button("Copy"):
                 plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
@@ -309,7 +311,7 @@ def main():
             # Speak button
             if st.button("🔊 Speak"):
                 # Remove HTML tags from full_text
-                plain_text = re.sub(r'<.*?>', '', full_text)
+                
     
                 # Convert the cleaned text to speech
                 tts = gTTS(plain_text, lang="zh")
@@ -342,6 +344,29 @@ def main():
 
     else:
         st.warning("No matching paragraphs found.")
+
+    if st.button("🔊 Speak"):
+                # Remove HTML tags from full_text
+                
+    
+                # Convert the cleaned text to speech
+                tts = gTTS(st.session_state.fullText, lang="zh")
+    
+                if st.session_state.fullText:
+                    tts = gTTS(text=st.session_state.fullText, lang=language)
+                    tts.save("output.mp3")
+        
+        # Play the generated audio
+                    st.audio("output.mp3")
+        
+        # Provide a download link for the audio file
+                    with open("output.mp3", "rb") as file:
+                        st.download_button(
+                            label="Download Audio",
+                            data=file,
+                            file_name="output.mp3",
+                            mime="audio/mp3"            
+                        )
 
 
 if __name__ == "__main__":

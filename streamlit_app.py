@@ -194,14 +194,13 @@ def main():
         height=500
     )
 
-    recentR= st.checkbox("show recent records")
-    if st.button("recentR"):
-        st.session_state.text_area_content = f"Recent: {st.session_state.file_content[-4000:]}"
+    if st.button("recentR 1000"):
+        st.session_state.text_area_content = f"Recent: {st.session_state.file_content[-1000:]}"
         st.rerun()
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
-    else:
-        content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
-        st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")
+    
+    content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
+    st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")

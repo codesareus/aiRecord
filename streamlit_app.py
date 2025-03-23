@@ -224,6 +224,12 @@ def main():
             if st.session_state.text_area_contentR:
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
                 #st.write(plain_text)
+                characters_to_remove = "*"
+
+# Remove specific characters
+                for char in characters_to_remove:
+                plain_text = plain_text.replace(char, "")
+
                 tts = gTTS(text=plain_text, lang="zh")
                 tts.save("recent.mp3")
                 # Play the generated audio

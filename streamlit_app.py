@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import pytz
 import re  # Import regex
 import os
-import io
 
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script

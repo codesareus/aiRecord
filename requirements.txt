@@ -1,6 +1,6 @@
 datetime
-streamlit==1.26.0
-gtts==2.3.1
+streamlit
+gtts
 pytz
 pydub
 textblob

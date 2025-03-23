@@ -213,7 +213,12 @@ def main():
             tts.save("recent.mp3")
                 # Play the generated audio
             st.audio("recent.mp3")
-        
+    if st.button("clear talk"):
+        if os.path.exists("recent.mp3"):
+            os.remove("recent.mp3")
+            st.success("Speech file cleared!")
+        else:
+            st.warning("No speech file to clear.")
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display

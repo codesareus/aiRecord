@@ -314,31 +314,21 @@ def main():
                 # Convert the cleaned text to speech
                 tts = gTTS(plain_text, lang="zh")
     
-                # Use a temporary file
-                # Use a temporary file
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
-                    tts.save(temp_file.name)
-                    st.session_state.speechFile = temp_file.name
-                    #speech_file = temp_file.name
-    
-                # Debugging: Print the file path and check if the file exists
-                #print(f"Generated speech file: {speech_file}")
-                if not os.path.exists(st.session_state.speechFile):
-                    st.error("Speech file not found!")
-                else:
-                    # Play the audio file
-                    try:
-                        st.audio(st.session_state.speechFile, format="audio/mp3")
-                    except Exception as e:
-                        st.error(f"Error playing audio: {e}")
-    
-                    # Button to download the speech file
-                    with open(st.session_state.speechFile, "rb") as file:
-                        st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
-    
-                # Clean up the temporary file
-                os.unlink(st.session_state.speechFile)
-                st.session_state.speechFile = "nofile"
+                if plain_text:
+                    tts = gTTS(text=plain_text, lang=language)
+                    tts.save("output.mp3")
+        
+        # Play the generated audio
+                    st.audio("output.mp3")
+        
+        # Provide a download link for the audio file
+                    with open("output.mp3", "rb") as file:
+                        st.download_button(
+                            label="Download Audio",
+                            data=file,
+                            file_name="output.mp3",
+                            mime="audio/mp3"            
+                        )
         else:
        
             # Show each paragraph as an expandable block without highlights when collapsed

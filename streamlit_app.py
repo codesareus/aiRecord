@@ -213,8 +213,7 @@ def main():
             st.session_state.text_area_contentR = f"Recent 4000: {st.session_state.file_content[-4000:]}"
             st.rerun()
     with col4:
-        if st.button("showingR" if st.session_state.showing else "Not showingR"):
-            st.session_state.showing = not st.session_state.showing
+        if st.button("Show Recent"):
             st.session_state.text_area_content = st.session_state.text_area_contentR
             st.rerun()
         
@@ -222,8 +221,8 @@ def main():
     col1, col2=st.columns(2)
     with col1:
         if st.button("🔊 Show and Talk Recent"):
-            if st.session_state.text_area_content:
-                tts = gTTS(text=st.session_state.text_area_content, lang="zh")
+            if st.session_state.text_area_contentR:
+                tts = gTTS(text=st.session_state.text_area_contentR, lang="zh")
                 tts.save("recent.mp3")
                 # Play the generated audio
                 st.audio("recent.mp3")

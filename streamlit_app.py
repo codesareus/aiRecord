@@ -241,7 +241,7 @@ def main():
                         st.download_button(
                             label="Download Audio",
                             data=file,
-                            file_name=f"{st.session_state.text_area_contentR[:10]}.mp3",
+                            file_name=f"{st.session_state.text_area_contentR[:12]}.mp3",
                             mime="audio/mp3"            
                         )
             else: 

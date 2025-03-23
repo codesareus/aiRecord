@@ -214,6 +214,8 @@ def main():
                 tts.save("recent.mp3")
                 # Play the generated audio
                 st.audio("recent.mp3")
+            else: 
+                st.write("no text to talk")
     with col2:
         if st.button("clear talk"):
             if os.path.exists("recent.mp3"):

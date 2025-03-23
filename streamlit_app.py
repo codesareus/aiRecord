@@ -291,7 +291,6 @@ def main():
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
                 st.session_state.text_area_content=st.session_state.matching_paragraphs
-                st.session_state.text_area_content= re.sub(r'<.*?>', '', st.session_state.text_area_content)
                 st.rerun()
     #st.code(st.session_state.matching_paragraphs)
                 #st.rerun()

@@ -254,7 +254,7 @@ def main():
                 full_text = "<br><br>".join(st.session_state.matching_paragraphs)
                 st.session_state.text_area_content=full_text
                 st.session_state.showing = False
-            else"
+            else:
                 st.session_state.text_area_content=""
             st.rerun()
     

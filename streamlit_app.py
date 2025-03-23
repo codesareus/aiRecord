@@ -125,7 +125,7 @@ def main():
     if "text_area_contentR" not in st.session_state:
         st.session_state.text_area_contentR = ""
     if "showing" not in st.session_state:
-        st.session_state.showing = False
+        st.session_state.showing = True
 
 # Initialize session state variables
     
@@ -256,6 +256,7 @@ def main():
                 st.session_state.showing = False
             else:
                 st.session_state.text_area_content=""
+                st.session_state.showing = True
             st.rerun()
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display

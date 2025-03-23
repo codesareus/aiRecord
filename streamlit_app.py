@@ -322,7 +322,7 @@ def main():
                     #speech_file = temp_file.name
     
                 # Debugging: Print the file path and check if the file exists
-                print(f"Generated speech file: {speech_file}")
+                #print(f"Generated speech file: {speech_file}")
                 if not os.path.exists(st.session_state.speechFile):
                     st.error("Speech file not found!")
                 else:

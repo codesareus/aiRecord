@@ -345,30 +345,7 @@ def main():
     else:
         st.warning("No matching paragraphs found.")
 
-    if st.button("🔊 Talk"):
-                # Remove HTML tags from full_text
-                
     
-                # Convert the cleaned text to speech
-                tts = gTTS(st.session_state.fullText, lang="zh")
-    
-                if st.session_state.fullText:
-                    tts = gTTS(text=st.session_state.fullText, lang="zh")
-                    tts.save("output.mp3")
-        
-        # Play the generated audio
-                    st.audio("output.mp3")
-        
-        # Provide a download link for the audio file
-                    with open("output.mp3", "rb") as file:
-                        st.download_button(
-                            label="Download Audio",
-                            data=file,
-                            file_name="output.mp3",
-                            mime="audio/mp3"            
-                        )
-
-
 if __name__ == "__main__":
     main()
 

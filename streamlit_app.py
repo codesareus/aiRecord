@@ -337,8 +337,8 @@ def main():
                         st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
     
                 # Clean up the temporary file
-                os.unlink(st.session_state.speechFile)
-                st.session_state.speechFile = "nofile"
+                ##os.unlink(st.session_state.speechFile)
+                #st.session_state.speechFile = "nofile"
         else:
        
             # Show each paragraph as an expandable block without highlights when collapsed

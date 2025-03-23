@@ -290,7 +290,8 @@ def main():
             if st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-                st.session_state.text_area_content=st.session_state.matching_paragraphs
+                full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+                st.session_state.text_area_content=full_text
                 st.rerun()
     #st.code(st.session_state.matching_paragraphs)
                 #st.rerun()
@@ -351,7 +352,7 @@ def main():
             full_text = "<br><br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
             plain_text = re.sub(r'<.*?>', '', full_text)
-            st.session_state.fullText = plain_text
+            #st.session_state.fullText = plain_text
             
             # Copy button (removes HTML tags before copying)
             if st.button("Copy"):

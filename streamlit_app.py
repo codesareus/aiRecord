@@ -345,7 +345,7 @@ def main():
     else:
         st.warning("No matching paragraphs found.")
 
-    if st.button("🔊 Speak"):
+    if st.button("🔊 Talk"):
                 # Remove HTML tags from full_text
                 
     

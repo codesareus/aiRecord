@@ -200,14 +200,14 @@ def main():
             st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
     with col2:
         if st.button("recentR 2000"):
-            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-2000:]}"
+            st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-2000:]}"
     with col3:
         if st.button("recentR 4000"):
-            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-4000:]}"
+            st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:]}"
 
 # Speak button
     
-    if st.button("🔊 Talk Recent"):
+    if st.button("🔊 Show and Talk Recent"):
         if st.session_state.text_area_content:
             tts = gTTS(text=st.session_state.text_area_content, lang="zh")
             tts.save("recent.mp3")

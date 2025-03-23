@@ -223,10 +223,7 @@ def main():
         if st.button("🔊 Talk Recent"):
             if st.session_state.text_area_contentR:
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
-                # Remove non-text symbols but keep Chinese characters, numbers, spaces, and specific
-                # Remove non-text symbols but keep letters, numbers, and common punctuation
-                
-                st.write(plain_text)
+                #st.write(plain_text)
                 tts = gTTS(text=plain_text, lang="zh")
                 tts.save("recent.mp3")
                 # Play the generated audio

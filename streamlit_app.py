@@ -6,6 +6,8 @@ import re  # Import regex
 import os
 import tempfile
 
+st.image("lotus.jpg",width=705)
+
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
 FILE_NAME = "aiRecord.txt"

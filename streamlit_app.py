@@ -224,9 +224,9 @@ def main():
             if st.session_state.text_area_contentR:
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
                 #st.write(plain_text)
+                # plane tax does not have ** however,*** still in  speech  file
                 characters_to_remove = "*"
-
-# Remove specific characters
+                # Remove specific characters
                 for char in characters_to_remove:
                     plain_text = plain_text.replace(char, "")
 

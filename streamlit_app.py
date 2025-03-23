@@ -206,19 +206,21 @@ def main():
             st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:]}"
 
 # Speak button
-    
-    if st.button("🔊 Show and Talk Recent"):
-        if st.session_state.text_area_content:
-            tts = gTTS(text=st.session_state.text_area_content, lang="zh")
-            tts.save("recent.mp3")
+    col1, col2=st.columns(2)
+    with col1:
+        if st.button("🔊 Show and Talk Recent"):
+            if st.session_state.text_area_content:
+                tts = gTTS(text=st.session_state.text_area_content, lang="zh")
+                tts.save("recent.mp3")
                 # Play the generated audio
-            st.audio("recent.mp3")
-    if st.button("clear talk"):
-        if os.path.exists("recent.mp3"):
-            os.remove("recent.mp3")
-            st.success("Speech file cleared!")
-        else:
-            st.warning("No speech file to clear.")
+                st.audio("recent.mp3")
+    with col2:
+        if st.button("clear talk"):
+            if os.path.exists("recent.mp3"):
+                os.remove("recent.mp3")
+                st.success("Speech file cleared!")
+            else:
+                st.warning("No speech file to clear.")
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display

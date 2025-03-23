@@ -220,7 +220,7 @@ def main():
 # Speak button
     col1, col2=st.columns(2)
     with col1:
-        if st.button("🔊 Show and Talk Recent"):
+        if st.button("🔊 Talk Recent"):
             if st.session_state.text_area_contentR:
                 tts = gTTS(text=st.session_state.text_area_contentR, lang="zh")
                 tts.save("recent.mp3")

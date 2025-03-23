@@ -304,13 +304,25 @@ def main():
                 
             if st.button("🔊 Speak"):
                 # Convert the combined text to speech
-                tts = gTTS(full_text, lang="zh")
-                speech_io = io.BytesIO()
-                tts.save(speech_io)
-                speech_io.seek(0)  # Reset pointer to start of the file
+                try:
+        # Convert the combined text to speech
+                    tts = gTTS(full_text, lang="zh-CN")  # Use "zh-CN" for Mandarin Chinese
+                    speech_io = io.BytesIO()
+                    tts.save(speech_io)
+                    speech_io.seek(0)  # Reset pointer to start of the file
 
-                st.audio(speech_io, format="audio/mp3")
-                st.download_button("⬇️ Download Speech", speech_io, file_name="speech.mp3", mime="audio/mp3")
+                    # Display audio player
+                    st.audio(speech_io, format="audio/mp3")
+
+        # Add a download button
+                    st.download_button(
+                        label="⬇️ Download Speech",
+                        data=speech_io,
+                        file_name="speech.mp3",
+                        mime="audio/mp3"
+                    )
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 
         else:
             # Show each paragraph as an expandable block without highlights when collapsed

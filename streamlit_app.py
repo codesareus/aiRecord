@@ -317,7 +317,7 @@ def main():
                 tts = gTTS(plain_text, lang="zh")
     
                 if plain_text:
-                    tts = gTTS(text=plain_text, lang=language)
+                    tts = gTTS(text=plain_text, lang=lang)
                     tts.save("output.mp3")
         
         # Play the generated audio
@@ -353,7 +353,7 @@ def main():
                 tts = gTTS(st.session_state.fullText, lang="zh")
     
                 if st.session_state.fullText:
-                    tts = gTTS(text=st.session_state.fullText, lang=language)
+                    tts = gTTS(text=st.session_state.fullText, lang=lang)
                     tts.save("output.mp3")
         
         # Play the generated audio

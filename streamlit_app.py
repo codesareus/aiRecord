@@ -304,15 +304,12 @@ def main():
             if st.button("🔊 Speak"):
                 # Convert the combined text to speech
                 tts = gTTS(full_text, lang="zh")
-                speech_file = "speech.mp3"
-                tts.save(speech_file)
+                speech_io = io.BytesIO()
+                tts.save(speech_io)
+                speech_io.seek(0)  # Reset pointer to start of the file
 
-                if speech_file:
-                    st.audio(speech_file, format="audio/mp3")
-
-                    # Button to download the speech file
-                    with open(speech_file, "rb") as file:
-                        st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
+                st.audio(speech_io, format="audio/mp3")
+                st.download_button("⬇️ Download Speech", speech_io, file_name="speech.mp3", mime="audio/mp3")
 
         else:
             # Show each paragraph as an expandable block without highlights when collapsed

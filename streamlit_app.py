@@ -320,7 +320,7 @@ def main():
             # Speak button
             if st.button("🔊 Speak"):
                 # Convert the cleaned text to speech
-                tts = gTTS(plain_text, lang="zh")
+                #tts = gTTS(plain_text, lang="zh")
     
                 if plain_text:
                     tts = gTTS(text=plain_text, lang="zh")

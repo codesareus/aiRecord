@@ -237,6 +237,13 @@ def main():
                 tts.save("recent.mp3")
                 # Play the generated audio
                 st.audio("recent.mp3")
+                with open("recent.mp3", "rb") as file:
+                        st.download_button(
+                            label="Download Audio",
+                            data=file,
+                            file_name=f"{st.session_state.text_area_contentR[:10]}.mp3",
+                            mime="audio/mp3"            
+                        )
             else: 
                 st.write("no text to talk")
     with col2:

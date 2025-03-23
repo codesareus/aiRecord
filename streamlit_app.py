@@ -199,19 +199,30 @@ def main():
         
     # Speak button
         if st.session_state.text_area_content != "":
-             if st.button("🔊 Speak"):
+            st.write("ok")
+            if st.button("🔊 Speak"):
                 # Remove HTML tags from full_text
-                 simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
+                simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
     
                 # Convert the cleaned text to speech
-                 tts = gTTS(simpleText, lang="zh")
+                tts = gTTS(simpleText, lang="zh")
     
             
-                 tts = gTTS(text=simpleText, lang="zh")
-                 tts.save("output.mp3")
+                tts = gTTS(text=simpleText, lang="zh")
+                tts.save("output.mp3")
+
+                # Play the generated audio
+                st.audio("output.mp3")
+
+                with open("output.mp3", "rb") as file:
+                    st.download_button(
+                        label="Download Audio",
+                        data=file,
+                        file_name="output.mp3",
+                        mime="audio/mp3"            
+                    )
         
-        # Play the generated audio
-                 st.audio("output.mp3")
+        
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display

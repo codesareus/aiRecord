@@ -193,17 +193,17 @@ def main():
         key="text_area",
         height=500
     )
-    simpleText= ""
+    
     if st.button("recentR 1000"):
         st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
     # Speak button
-        st.write(st.session_state.text_area_content[-20:])
-        if st.button("🔊 Talk"):
-            if st.session_state.text_area_content:
-                tts = gTTS(text=st.session_state.text_area_content, lang="zh")
-                tts.save("recent.mp3")
+    st.write(st.session_state.text_area_content[:20])
+    if st.button("🔊 Talk Recent"):
+        if st.session_state.text_area_content:
+            tts = gTTS(text=st.session_state.text_area_content, lang="zh")
+            tts.save("recent.mp3")
                 # Play the generated audio
-                st.audio("recent.mp3")
+            st.audio("recent.mp3")
         
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     

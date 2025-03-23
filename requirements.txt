@@ -10,3 +10,4 @@ scikit-learn
 pandas
 pandas_market_calendars
 requests
+io

@@ -196,32 +196,15 @@ def main():
 
     if st.button("recentR 1000"):
         st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
-        
+        simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
     # Speak button
-        if st.session_state.text_area_content != "":
+        if len(simpleText) >= 100:
             st.write("ok")
             if st.button("🔊 Speak"):
-                # Remove HTML tags from full_text
-                simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
-    
-                # Convert the cleaned text to speech
                 tts = gTTS(simpleText, lang="zh")
-    
-            
-                tts = gTTS(text=simpleText, lang="zh")
                 tts.save("output.mp3")
-
                 # Play the generated audio
                 st.audio("output.mp3")
-
-                with open("output.mp3", "rb") as file:
-                    st.download_button(
-                        label="Download Audio",
-                        data=file,
-                        file_name="output.mp3",
-                        mime="audio/mp3"            
-                    )
-        
         
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     
@@ -337,9 +320,6 @@ def main():
     
             # Speak button
             if st.button("🔊 Speak"):
-                # Remove HTML tags from full_text
-                
-    
                 # Convert the cleaned text to speech
                 tts = gTTS(plain_text, lang="zh")
     

@@ -362,6 +362,10 @@ def main():
             if st.button("🔊 Speak"):
                 # Convert the cleaned text to speech
                 #tts = gTTS(plain_text, lang="zh")
+                # Remove specific characters
+                characters_to_remove= "*"
+                for char in characters_to_remove:
+                    plain_text = plain_text.replace(char, "")
     
                 if plain_text:
                     tts = gTTS(text=plain_text, lang="zh")

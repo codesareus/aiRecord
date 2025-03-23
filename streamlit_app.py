@@ -199,17 +199,17 @@ def main():
     col1, col2, col3, col4=st.columns(4)
     with col1:
         if st.button("recentR 1000"):
-            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:][:50]}"
             st.session_state.text_area_contentR = f"Recent 1000: {st.session_state.file_content[-1000:]}"
             st.rerun()
     with col2:
         if st.button("recentR 2000"):
-            st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-2000:][:50]}"
             st.session_state.text_area_contentR = f"Recent 2000: {st.session_state.file_content[-2000:]}"
             st.rerun()
     with col3:
         if st.button("recentR 4000"):
-            st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:][:50]}"
             st.session_state.text_area_contentR = f"Recent 4000: {st.session_state.file_content[-4000:]}"
             st.rerun()
     with col4:

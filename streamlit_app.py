@@ -314,27 +314,27 @@ def main():
     
                 # Use a temporary file
                 # Use a temporary file
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
-                tts.save(temp_file.name)
-                speech_file = temp_file.name
-
-            # Debugging: Print the file path and check if the file exists
-            print(f"Generated speech file: {speech_file}")
-            if not os.path.exists(speech_file):
-                st.error("Speech file not found!")
-            else:
-                # Play the audio file
-                try:
-                    st.audio(speech_file, format="audio/mp3")
-                except Exception as e:
-                    st.error(f"Error playing audio: {e}")
-
-                # Button to download the speech file
-                with open(speech_file, "rb") as file:
-                    st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
-
-            # Clean up the temporary file
-            os.unlink(speech_file)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
+                    tts.save(temp_file.name)
+                    speech_file = temp_file.name
+    
+                # Debugging: Print the file path and check if the file exists
+                print(f"Generated speech file: {speech_file}")
+                if not os.path.exists(speech_file):
+                    st.error("Speech file not found!")
+                else:
+                    # Play the audio file
+                    try:
+                        st.audio(speech_file, format="audio/mp3")
+                    except Exception as e:
+                        st.error(f"Error playing audio: {e}")
+    
+                    # Button to download the speech file
+                    with open(speech_file, "rb") as file:
+                        st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
+    
+                # Clean up the temporary file
+                os.unlink(speech_file)
         else:
        
             # Show each paragraph as an expandable block without highlights when collapsed

@@ -120,8 +120,10 @@ def main():
         st.session_state.keyword_list = load_keyword_list()
     if "search_phrase" not in st.session_state:
         st.session_state.search_phrase = ""
-    if "fullText" not in st.session_state:
-        st.session_state.fullText = ""
+    if "text_area_contentR" not in st.session_state:
+        st.session_state.text_area_contentR = ""
+    if "showing" not in st.session_state:
+        st.session_state.showing = False
 
 # Initialize session state variables
     
@@ -194,17 +196,28 @@ def main():
         height=500
     )
 
-    col1, col2, col3=st.columns(3)
+    col1, col2, col3, col4=st.columns(4)
     with col1:
         if st.button("recentR 1000"):
-            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
+            st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_contentR = f"Recent 1000: {st.session_state.file_content[-1000:]}"
+            st.rerun()
     with col2:
         if st.button("recentR 2000"):
-            st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-2000:]}"
+            st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_contentR = f"Recent 2000: {st.session_state.file_content[-2000:]}"
+            st.rerun()
     with col3:
         if st.button("recentR 4000"):
-            st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:]}"
-
+            st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-50:]}"
+            st.session_state.text_area_contentR = f"Recent 4000: {st.session_state.file_content[-4000:]}"
+            st.rerun()
+    with col4:
+        if st.button("showingR" if st.session_state.showing else "Not showingR"):
+            st.session_state.showing = not st.session_state.showing
+            st.session_state.text_area_content = st.session_state.text_area_contentR
+            st.rerun()
+        
 # Speak button
     col1, col2=st.columns(2)
     with col1:

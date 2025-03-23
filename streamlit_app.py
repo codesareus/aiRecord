@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pytz
 import re  # Import regex
 import os
-import io
+import tempfile
 
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
@@ -282,17 +282,19 @@ def main():
                 st.warning("No file content available.")
 
     # Button to toggle expand/collapse state
+
+
+# Expand/Collapse All button
     with col3:
         if st.button("Expand All" if not st.session_state.expand_all else "Collapse All"):
             st.session_state.expand_all = not st.session_state.expand_all
             st.rerun()
-
-        # Display matching paragraphs
+    
+    # Display matching paragraphs
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
-
+    
         if st.session_state.expand_all:
-
             full_text = "<br><br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
     
@@ -301,12 +303,19 @@ def main():
                 plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
                 st.code(plain_text)
                 st.write("Copied to clipboard!")
-                
+    
+            # Speak button
             if st.button("🔊 Speak"):
-                # Convert the combined text to speech
-                tts = gTTS(full_text, lang="zh")
-                speech_file = "speech.mp3"
-                tts.save(speech_file)
+                # Remove HTML tags from full_text
+                plain_text = re.sub(r'<.*?>', '', full_text)
+    
+                # Convert the cleaned text to speech
+                tts = gTTS(plain_text, lang="zh")
+    
+                # Use a temporary file
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp_file:
+                    tts.save(temp_file.name)
+                    speech_file = temp_file.name
     
                 if speech_file:
                     st.audio(speech_file, format="audio/mp3")
@@ -315,6 +324,7 @@ def main():
                     with open(speech_file, "rb") as file:
                         st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
         else:
+       
             # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):
                 truncated_text = f"......{paragraph[:50]}"  # Show only the first 50 characters

@@ -199,7 +199,7 @@ def main():
         simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
     # Speak button
         st.write(simpleText[-20:])
-        if st.button("🔊 Speak"):
+        if st.button("🔊 Talk"):
             if simpleText:
                 tts = gTTS(text=simpleText, lang="zh")
                 tts.save("recent.mp3")
@@ -207,14 +207,7 @@ def main():
                 st.audio("recent.mp3")
         
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
-    st.write(simpleText[-20:])
-    if st.button("🔊 Speak"):
-        if simpleText:
-            tts = gTTS(text=simpleText, lang="zh")
-            tts.save("recent.mp3")
-                # Play the generated audio
-            st.audio("recent.mp3")
-            
+    
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
     st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")
 

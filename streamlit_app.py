@@ -196,7 +196,7 @@ def main():
 
     if st.button("recentR 1000"):
         st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
-        st.rerun()
+        
     # Speak button
         if st.button("🔊 Speak"):
                 # Remove HTML tags from full_text

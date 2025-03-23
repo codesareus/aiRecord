@@ -200,13 +200,13 @@ def main():
     # Speak button
         if st.button("🔊 Speak"):
                 # Remove HTML tags from full_text
-            st.session_state.text_area_content = re.sub(r'<.*?>', '', st.session_state.text_area_content)
+            simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
     
                 # Convert the cleaned text to speech
-            tts = gTTS(st.session_state.text_area_content, lang="zh")
+            tts = gTTS(simpleText, lang="zh")
     
             
-            tts = gTTS(text=st.session_state.text_area_content, lang="zh")
+            tts = gTTS(text=simpleText, lang="zh")
             tts.save("output.mp3")
         
         # Play the generated audio

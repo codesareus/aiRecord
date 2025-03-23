@@ -294,7 +294,8 @@ def main():
             st.error("No file found to download.")
 
     with col2:
-        st.write("future design")
+        if st.button("future design"):
+            st.write("")
     #st.code(st.session_state.matching_paragraphs)
                 #st.rerun()
     # Search functionality

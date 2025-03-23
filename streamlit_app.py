@@ -195,7 +195,7 @@ def main():
     )
 
     recentR= st.checkbox("show recent records")
-    if recentR:
+    if st.button("recentR"):
         st.session_state.text_area_content = f"Recent: {st.session_state.file_content[-4000:]}"
         st.rerun()
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")

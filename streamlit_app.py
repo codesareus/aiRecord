@@ -198,10 +198,10 @@ def main():
         st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:]}"
         simpleText = re.sub(r'<.*?>', '', st.session_state.text_area_content)
     # Speak button
-    st.write(simpleText[-20:])
+    st.write(st.session_state.text_area_content[-20:])
     if st.button("🔊 Talk"):
-        if simpleText:
-            tts = gTTS(text=simpleText, lang="zh")
+        if st.session_state.text_area_content:
+            tts = gTTS(text=st.session_state.text_area_content, lang="zh")
             tts.save("recent.mp3")
                 # Play the generated audio
             st.audio("recent.mp3")

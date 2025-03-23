@@ -287,31 +287,33 @@ def main():
             st.session_state.expand_all = not st.session_state.expand_all
             st.rerun()
 
-    # Display matching paragraphs
+        # Display matching paragraphs
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
-        full_text = "<br><br>".join(st.session_state.matching_paragraphs)
-        st.markdown(full_text, unsafe_allow_html=True)
+        if st.session_state.expand_all:
 
-        # Copy button (removes HTML tags before copying)
-        if st.button("Copy"):
-            plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
-            st.code(plain_text)
-            st.write("Copied to clipboard!")
-            
-        if st.button("🔊 Speak"):
-            # Convert the combined text to speech
-            tts = gTTS(full_text, lang="zh")
-            speech_file = "speech.mp3"
-            tts.save(speech_file)
-
-            if speech_file:
-                st.audio(speech_file, format="audio/mp3")
-
-                # Button to download the speech file
-                with open(speech_file, "rb") as file:
-                    st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
+            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+            st.markdown(full_text, unsafe_allow_html=True)
+    
+            # Copy button (removes HTML tags before copying)
+            if st.button("Copy"):
+                plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
+                st.code(plain_text)
+                st.write("Copied to clipboard!")
+                
+            if st.button("🔊 Speak"):
+                # Convert the combined text to speech
+                tts = gTTS(full_text, lang="zh")
+                speech_file = "speech.mp3"
+                tts.save(speech_file)
+    
+                if speech_file:
+                    st.audio(speech_file, format="audio/mp3")
+    
+                    # Button to download the speech file
+                    with open(speech_file, "rb") as file:
+                        st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
         else:
             # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):

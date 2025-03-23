@@ -228,7 +228,7 @@ def main():
 
 # Remove specific characters
                 for char in characters_to_remove:
-                plain_text = plain_text.replace(char, "")
+                    plain_text = plain_text.replace(char, "")
 
                 tts = gTTS(text=plain_text, lang="zh")
                 tts.save("recent.mp3")

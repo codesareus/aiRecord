@@ -205,12 +205,12 @@ def main():
                 # Convert the cleaned text to speech
             tts = gTTS(st.session_state.text_area_content, lang="zh")
     
-            if st.session_state.text_area_content:
-                tts = gTTS(text=st.session_state.text_area_content, lang="zh")
-                tts.save("output.mp3")
+            
+            tts = gTTS(text=st.session_state.text_area_content, lang="zh")
+            tts.save("output.mp3")
         
         # Play the generated audio
-                st.audio("output.mp3")
+            st.audio("output.mp3")
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display

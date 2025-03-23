@@ -247,13 +247,16 @@ def main():
                 st.warning("No speech file to clear.")
         #st.code(f"Recent: {st.session_state.file_content[-4000:]}")
     with col3:
-        if st.button("show today"):
-            if st.session_state.get("file_content"):
+        if st.button("show today" if st.session_state.showing else "clear text"):
+            if st.session_state.showing and st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
                 full_text = "<br><br>".join(st.session_state.matching_paragraphs)
                 st.session_state.text_area_content=full_text
-                st.rerun()
+                st.session_state.showing = False
+            else"
+                st.session_state.text_area_content=""
+            st.rerun()
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
     st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")

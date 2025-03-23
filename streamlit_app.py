@@ -291,39 +291,27 @@ def main():
     if st.session_state.get("matching_paragraphs"):
         st.subheader("Matching Paragraphs:")
 
-        if st.session_state.expand_all:
-            # Show all paragraphs as a single block for easy copying (preserving highlights)
-            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
-            st.markdown(full_text, unsafe_allow_html=True)
+        full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+        st.markdown(full_text, unsafe_allow_html=True)
 
-            # Copy button (removes HTML tags before copying)
-            if st.button("Copy"):
-                plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
-                st.code(plain_text)
-                st.write("Copied to clipboard!")
-                
-            if st.button("🔊 Speak"):
-                # Convert the combined text to speech
-                try:
-        # Convert the combined text to speech
-                    tts = gTTS(full_text, lang="zh-CN")  # Use "zh-CN" for Mandarin Chinese
-                    speech_io = io.BytesIO()
-                    tts.save(speech_io)
-                    speech_io.seek(0)  # Reset pointer to start of the file
+        # Copy button (removes HTML tags before copying)
+        if st.button("Copy"):
+            plain_text = re.sub(r'<.*?>', '', full_text)  # Remove HTML tags
+            st.code(plain_text)
+            st.write("Copied to clipboard!")
+            
+        if st.button("🔊 Speak"):
+            # Convert the combined text to speech
+            tts = gTTS(full_text, lang="zh")
+            speech_file = "speech.mp3"
+            tts.save(speech_file)
 
-                    # Display audio player
-                    st.audio(speech_io, format="audio/mp3")
+            if speech_file:
+                st.audio(speech_file, format="audio/mp3")
 
-        # Add a download button
-                    st.download_button(
-                        label="⬇️ Download Speech",
-                        data=speech_io,
-                        file_name="speech.mp3",
-                        mime="audio/mp3"
-                    )
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-
+                # Button to download the speech file
+                with open(speech_file, "rb") as file:
+                    st.download_button("⬇️ Download Speech", file, file_name="speech.mp3", mime="audio/mp3")
         else:
             # Show each paragraph as an expandable block without highlights when collapsed
             for idx, paragraph in enumerate(st.session_state.matching_paragraphs):

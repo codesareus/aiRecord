@@ -225,6 +225,7 @@ def main():
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
                 # Remove non-text symbols but keep Chinese characters, numbers, spaces, and specific punctuation
                 plain_text = re.sub(r'[^\u4e00-\u9fffa-zA-Z0-9\s.,!?;:\'"-]', '', plain_text)
+                st.write(plain_text)
                 tts = gTTS(text=plain_text, lang="zh")
                 tts.save("recent.mp3")
                 # Play the generated audio

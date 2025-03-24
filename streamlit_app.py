@@ -6,7 +6,11 @@ import re  # Import regex
 import os
 import tempfile
 
-st.image("lotus.jpg",width=705)
+images=["lotus.jpg", "cherry.jpeg","fivek.jpg"]
+def getImage(num=0):
+    return images[num]
+    
+st.image(images[1],width=705)
 
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
@@ -126,11 +130,6 @@ def main():
         st.session_state.text_area_contentR = ""
     if "showing" not in st.session_state:
         st.session_state.showing = True
-
-    images=["lotus.jpg", "cherry.jpeg"]
-    def getImage(num=0):
-        return images[num]
-        
     if "image" not in st.session_state:
         st.session_state.image = getImage(0)
 

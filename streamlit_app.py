@@ -289,9 +289,10 @@ def main():
             st.session_state.show_confirmation = True
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
+            st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
         else:
             st.warning("Text Box Empty!")
-        st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
+        
                 
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):

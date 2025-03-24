@@ -267,7 +267,7 @@ def main():
             if st.session_state.showing and st.session_state.get("file_content"):
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
-                full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+                full_text = "".join(st.session_state.matching_paragraphs)
                 st.session_state.text_area_content=full_text
                 st.session_state.showing = False
             else:

@@ -278,18 +278,27 @@ def main():
     save_button_disabled = secret_key != "zzzzzzzzz" or user_text == ""
 
     # Save text button
-    if st.button("Save Text", disabled=save_button_disabled):
-        if  user_text != "" and user_text.strip()  :
-            save_text_to_file(user_text)
+    col1, col2=st.columns(2)
+    saveok = True
+    with col1:
+        if st.button("Save Text", disabled=save_button_disabled):
+            if  user_text != "" and user_text.strip() and saveok :
+                save_text_to_file(user_text)
             #st.session_state.text_area_content = ""
             #user_text =""
-            st.session_state.show_confirmation = True
-            st.session_state.text_area_content=""
-            user_text =""
-            st.rerun()  
-        else:
-            st.write("something is not right")
+                st.session_state.show_confirmation = True
+                saveok = False
+                st.rerun()  
+            else:
+                st.write("maybe saved already")
 
+    with col2:
+        if st.button("clear input" if not saveok else "activate save" ):
+            if not saveok:
+                st.session_state.text_area_content=""
+                saveok = True
+                st.rerun()  
+            
                 
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):

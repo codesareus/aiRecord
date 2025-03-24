@@ -284,15 +284,14 @@ def main():
 
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):
-        if  user_text != "" and user_text.strip() and len(user_text) <=2000 :
+        if  user_text != "" and user_text.strip()  :
             save_text_to_file(user_text)
             st.session_state.show_confirmation = True
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-        elif len(user_text) > 2000:
-            st.warning("Text > 2000")
-        
+        else:
+            st.warning("something is not right")
                 
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):

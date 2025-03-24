@@ -272,6 +272,7 @@ def main():
                 st.session_state.showing = False
             else:
                 st.session_state.text_area_content=""
+                st.session_state.text_saved = False
                 st.session_state.showing = True
             st.rerun()
     
@@ -282,12 +283,13 @@ def main():
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
     save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_saved
 
+    if user_text =="":
+        st.session_state.text_saved = False
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):
         if user_text.strip():
             save_text_to_file(user_text)
             st.session_state.show_confirmation = True
-            st.session_state.new_text_saved = True  # Enable "Delete Last" after saving
             st.session_state.text_saved = True  # Disable "Save Text" after saving
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
         else:

@@ -201,7 +201,7 @@ def main():
     user_text = st.text_area(
         "Enter your text (max 5000 characters):",
         value=st.session_state.text_area_content,
-        max_chars=5000,
+        max_chars=10000,
         key="text_area",
         height=500
     )
@@ -284,14 +284,14 @@ def main():
 
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):
-        if  user_text != "" and user_text.strip()  :
+        if  user_text != "" and user_text.strip() and len(user_text) <=2000 :
             save_text_to_file(user_text)
             st.session_state.show_confirmation = True
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-        else:
-            st.warning("Text Box Empty!")
+        elif len(user_text) > 2000
+            st.warning("Text > 2000")
         
                 
     # Show confirmation message and ClearInput button

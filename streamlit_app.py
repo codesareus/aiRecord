@@ -285,21 +285,21 @@ def main():
             #user_text =""
             st.session_state.show_confirmation = True
             st.session_state.text_area_content=""
-            st.session_state.showing = False
+            user_text =""
             st.rerun()  
         else:
             st.write("something is not right")
-        
+
                 
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):
         st.success("Text saved successfully!")
-        if st.button("ClearInput"):
-            if st.session_state.showing == False:
-                st.session_state.text_area_content = ""
-                user_text =""
-                st.session_state.showing == True
-                st.rerun()
+        #if st.button("ClearInput"):
+            #if st.session_state.showing == False:
+                #st.session_state.text_area_content = ""
+                #user_text =""
+                # st.session_state.showing == True
+                #st.rerun()
 
         st.session_state.show_confirmation = False
  

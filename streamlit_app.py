@@ -280,11 +280,11 @@ def main():
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
-    save_button_disabled = secret_key != "zzzzzzzzz" or st.session_state.text_area_content==""
+    save_button_disabled = secret_key != "zzzzzzzzz" 
 
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):
-        if user_text.strip() :
+        if user_text != "" and user_text.strip()  :
             save_text_to_file(user_text)
             st.session_state.show_confirmation = True
             st.session_state.text_area_content=""# Disable "Save Text" after saving

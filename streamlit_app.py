@@ -410,7 +410,7 @@ def main():
 
                 with st.expander(truncated_text):
                     # Ensure highlights work when expanded
-                    cleaned_paragraph = f'<div style="white-space: pre-wrap;">{paragraph}</div>'
+                    cleaned_paragraph = f'<div style=" pre-wrap;">{paragraph}</div>'
                     st.markdown(cleaned_paragraph, unsafe_allow_html=True)
 
     else:

@@ -288,12 +288,12 @@ def main():
             save_text_to_file(user_text)
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
-            #st.session_state.show_confirmation = True
-            st.write("OK")
-            
+            clear_text()
+            st.session_state.show_confirmation = True
+            st.rerun()  
         else:
             st.write("something is not right")
-        st.rerun()  
+        
                 
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):

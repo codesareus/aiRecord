@@ -76,9 +76,6 @@ def sort_paragraphs(paragraphs):
     return [p for _, p in sorted_paragraphs]
 
 # Function to clear text input
-def clear_text():
-    st.session_state.text_area_content = ""
-    user_text =""
 
 # Function to load keyword list from a file
 def load_keyword_list(filename="keywords.txt"):
@@ -294,7 +291,11 @@ def main():
     # Show confirmation message and ClearInput button
     if st.session_state.get("show_confirmation", False):
         st.success("Text saved successfully!")
-        st.button("ClearInput", on_click=clear_text)
+        if st.button("ClearInput"):
+            st.session_state.text_area_content = ""
+            user_text =""
+            st.rerun()
+
         st.session_state.show_confirmation = False
  
     # Download button

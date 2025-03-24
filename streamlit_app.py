@@ -281,9 +281,11 @@ def main():
     if st.button("Save Text", disabled=save_button_disabled):
         if  user_text != "" and user_text.strip()  :
             save_text_to_file(user_text)
-            st.session_state.text_area_content = ""
-            user_text =""
+            #st.session_state.text_area_content = ""
+            #user_text =""
             st.session_state.show_confirmation = True
+            st.session_state.text_area_content=""
+            st.session_state.showing = False
             st.rerun()  
         else:
             st.write("something is not right")
@@ -293,9 +295,11 @@ def main():
     if st.session_state.get("show_confirmation", False):
         st.success("Text saved successfully!")
         if st.button("ClearInput"):
-            st.session_state.text_area_content = ""
-            user_text =""
-            st.rerun()
+            if st.session_state.showing == False:
+                st.session_state.text_area_content = ""
+                user_text =""
+                st.session_state.showing == True
+                st.rerun()
 
         st.session_state.show_confirmation = False
  

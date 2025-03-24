@@ -98,7 +98,7 @@ def get_paragraphs_by_date(file_content, target_date):
             #trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
             matching_paragraphs.append(paragraph)
     return matching_paragraphs
-
+    
 # Streamlit app
 def main():
     st.title("AI Record App")
@@ -126,6 +126,8 @@ def main():
         st.session_state.text_area_contentR = ""
     if "showing" not in st.session_state:
         st.session_state.showing = True
+    if "image" not in st.session_state:
+        st.session_state.image = getImage(0)
 
 # Initialize session state variables
     
@@ -137,6 +139,10 @@ def main():
         st.session_state.new_text_saved = False  # Track if new text has been saved
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
+
+    images=["lotus.jpg", "cherry.jpeg"]
+    def getImage(num=0):
+        return images[num]
 
     col1,col2 = st.columns(2)
     with col1:
@@ -173,6 +179,8 @@ def main():
                             with cols[i]:
                                 if st.button(keyword, key=f"keyword_{keyword}"):
                                     st.session_state.search_phrase = keyword
+                                    if i<=len(images)-1:
+                                        st.session_state.image = getImage(i)
                                     st.session_state.matching_paragraphs = search_keywords_in_file([keyword], st.session_state.file_content)
                                     st.session_state.matching_paragraphs = sort_paragraphs(st.session_state.matching_paragraphs)
                                     st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
@@ -421,6 +429,7 @@ if __name__ == "__main__":
     main()
 
 #######
-
-st.image("lotus.jpg",width=705)
+    
+st.image(st.session_state.image)
+#fig, axes = plt.subplots(nro
 #from textblob import TextBlob

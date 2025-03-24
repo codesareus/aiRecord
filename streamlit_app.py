@@ -364,7 +364,7 @@ def main():
         st.subheader("Matching Paragraphs:")
     
         if st.session_state.expand_all:
-            full_text = "<br><br>".join(st.session_state.matching_paragraphs)
+            full_text = "<br>".join(st.session_state.matching_paragraphs)
             st.markdown(full_text, unsafe_allow_html=True)
             plain_text = re.sub(r'<.*?>', '', full_text)
             #st.session_state.fullText = plain_text

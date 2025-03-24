@@ -286,9 +286,9 @@ def main():
     if st.button("Save Text", disabled=save_button_disabled):
         if  user_text != "" and user_text.strip()  :
             save_text_to_file(user_text)
-            st.session_state.show_confirmation = True
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
+            st.session_state.show_confirmation = True
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
         else:
             st.warning("something is not right")

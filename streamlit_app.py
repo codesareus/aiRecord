@@ -280,7 +280,7 @@ def main():
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
-    save_button_disabled = secret_key != "zzzzzzzzz" 
+    save_button_disabled = secret_key != "zzzzzzzzz" or user_text == ""
 
     # Save text button
     if st.button("Save Text", disabled=save_button_disabled):

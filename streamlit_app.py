@@ -77,10 +77,8 @@ def sort_paragraphs(paragraphs):
 
 # Function to clear text input
 def clear_text():
-    st.session_state["text_area"] = ""
-    st.session_state.text_saved = False  # Re-enable "Save Text"
-    st.session_state.show_confirmation = False
-    st.session_state.new_text_saved = False
+    st.session_state.text_area_content = ""
+    user_text =""
 
 # Function to load keyword list from a file
 def load_keyword_list(filename="keywords.txt"):
@@ -286,8 +284,6 @@ def main():
     if st.button("Save Text", disabled=save_button_disabled):
         if  user_text != "" and user_text.strip()  :
             save_text_to_file(user_text)
-            st.session_state.text_area_content=""# Disable "Save Text" after saving
-            user_text =""      
             clear_text()
             st.session_state.show_confirmation = True
             st.rerun()  

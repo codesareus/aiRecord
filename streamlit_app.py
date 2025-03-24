@@ -290,7 +290,7 @@ def main():
             st.session_state.text_area_content=""# Disable "Save Text" after saving
             user_text =""      
             st.rerun()  # Use st.rerun() instead of st.experimental_rerun()
-        elif len(user_text) > 2000
+        elif len(user_text) > 2000:
             st.warning("Text > 2000")
         
                 

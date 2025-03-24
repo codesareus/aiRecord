@@ -126,6 +126,11 @@ def main():
         st.session_state.text_area_contentR = ""
     if "showing" not in st.session_state:
         st.session_state.showing = True
+
+    images=["lotus.jpg", "cherry.jpeg"]
+    def getImage(num=0):
+        return images[num]
+        
     if "image" not in st.session_state:
         st.session_state.image = getImage(0)
 
@@ -139,10 +144,6 @@ def main():
         st.session_state.new_text_saved = False  # Track if new text has been saved
     if "text_saved" not in st.session_state:
         st.session_state.text_saved = False  # Track if text has been saved
-
-    images=["lotus.jpg", "cherry.jpeg"]
-    def getImage(num=0):
-        return images[num]
 
     col1,col2 = st.columns(2)
     with col1:

@@ -295,12 +295,12 @@ def main():
         st.success("Text saved successfully!")
         st.session_state.show_confirmation = False
 
-    with col2:
+    with col3:
         if st.button("activate save"):
             st.session_state.text_area_content = user_text
             st.rerun()
     
-    with col3:
+    with col2:
         #if st.button("Download Saved File"):
         if st.session_state.file_content:
             st.download_button(

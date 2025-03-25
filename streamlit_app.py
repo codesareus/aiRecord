@@ -212,7 +212,7 @@ def main():
     with col1:
         if st.button("recentR 1000"):
             st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:][:50]}"
-            st.session_state.text_area_contentR = f"Recent 1000: {cleanSymbols(st.session_state.file_content[-1000:]）}"
+            st.session_state.text_area_contentR = f"Recent 1000: {cleanSymbols(st.session_state.file_content[-1000:])}"
             st.rerun()
     with col2:
         if st.button("recentR 2000"):

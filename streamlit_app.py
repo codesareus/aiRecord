@@ -222,7 +222,7 @@ def main():
     with col3:
         if st.button("recentR 4000"):
             st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:][:50]}"
-            st.session_state.text_area_contentR = f"Recent 4000: {cleanSymbols(st.session_state.file_content[-4000:])}")
+            st.session_state.text_area_contentR = f"Recent 4000: {cleanSymbols(st.session_state.file_content[-4000:])}"
             st.rerun()
     with col4:
         if st.button("Show Recent"):

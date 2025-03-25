@@ -99,7 +99,7 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 def cleanSymbols(text=""):
-    characters_to_remove = "}*#*"
+    characters_to_remove = "}#*#*"
                 # Remove specific characters
     for char in characters_to_remove:
         plain_text = text.replace(char, "")

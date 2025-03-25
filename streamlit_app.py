@@ -99,10 +99,12 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 def cleanSymbols(text=""):
-    characters_to_remove = "}#*"
+    textHere = re.sub(r'<.*?>', '', text)
+    characters_to_remove = "#*}"
                 # Remove specific characters
+    
     for char in characters_to_remove:
-        plain_text = text.replace(char, "")
+        plain_text = textHere.replace(char, "")
     return plain_text 
         
 # Streamlit app

@@ -97,7 +97,14 @@ def get_paragraphs_by_date(file_content, target_date):
             #trimmed_text1 = paragraph[:20]  # Get only the first 20 characters
             matching_paragraphs.append(paragraph)
     return matching_paragraphs
-    
+
+def cleanSymbols(text=""):
+    characters_to_remove = "}*#"
+                # Remove specific characters
+    for char in characters_to_remove:
+        plain_text = text.replace(char, "")
+    return plain_text 
+        
 # Streamlit app
 def main():
     st.title("AI Record App")
@@ -205,17 +212,17 @@ def main():
     with col1:
         if st.button("recentR 1000"):
             st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:][:50]}"
-            st.session_state.text_area_contentR = f"Recent 1000: {st.session_state.file_content[-1000:]}"
+            st.session_state.text_area_contentR = cleanSymbols(f"Recent 1000: {st.session_state.file_content[-1000:]}")
             st.rerun()
     with col2:
         if st.button("recentR 2000"):
             st.session_state.text_area_content = f"Recent 2000: {st.session_state.file_content[-2000:][:50]}"
-            st.session_state.text_area_contentR = f"Recent 2000: {st.session_state.file_content[-2000:]}"
+            st.session_state.text_area_contentR = cleanSymbols(f"Recent 2000: {st.session_state.file_content[-2000:]}")
             st.rerun()
     with col3:
         if st.button("recentR 4000"):
             st.session_state.text_area_content = f"Recent 4000: {st.session_state.file_content[-4000:][:50]}"
-            st.session_state.text_area_contentR = f"Recent 4000: {st.session_state.file_content[-4000:]}"
+            st.session_state.text_area_contentR =cleanSymbols( f"Recent 4000: {st.session_state.file_content[-4000:]}")
             st.rerun()
     with col4:
         if st.button("Show Recent"):
@@ -231,10 +238,11 @@ def main():
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
                 #st.write(plain_text)
                 # plane tax does not have ** however,*** still in  speech  file
-                characters_to_remove = "}*#"
+                #characters_to_remove = "}*#"
                 # Remove specific characters
-                for char in characters_to_remove:
-                    plain_text = plain_text.replace(char, "")
+                #for char in characters_to_remove:
+                    #plain_text = plain_text.replace(char, "")
+                plain_text = cleanSymbols(plain_text)
 
                 tts = gTTS(text=plain_text, lang="zh")
                 tts.save("recent.mp3")
@@ -263,7 +271,7 @@ def main():
                 today = datetime.now(midwest)
                 st.session_state.matching_paragraphs = get_paragraphs_by_date(st.session_state.file_content, today)
                 full_text = "".join(st.session_state.matching_paragraphs)
-                st.session_state.text_area_content=full_text
+                st.session_state.text_area_content=cleanSymbols(full_text)
                 st.session_state.showing = False
             else:
                 st.session_state.text_area_content=""

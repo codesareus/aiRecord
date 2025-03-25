@@ -99,7 +99,7 @@ def get_paragraphs_by_date(file_content, target_date):
     return matching_paragraphs
 
 def cleanSymbols(text=""):
-    characters_to_remove = "}#*#*"
+    characters_to_remove = "}#*"
                 # Remove specific characters
     for char in characters_to_remove:
         plain_text = text.replace(char, "")
@@ -212,7 +212,7 @@ def main():
     with col1:
         if st.button("recentR 1000"):
             st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:][:50]}"
-            st.session_state.text_area_contentR = cleanSymbols(f"Recent 1000: {st.session_state.file_content[-1000:]}")
+            st.session_state.text_area_contentR = f"Recent 1000: {cleanSymbols(st.session_state.file_content[-1000:]）}"
             st.rerun()
     with col2:
         if st.button("recentR 2000"):

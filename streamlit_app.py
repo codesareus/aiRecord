@@ -278,7 +278,7 @@ def main():
     save_button_disabled = secret_key != "zzzzzzzzz" or user_text == "" or st.session_state.text_area_content == ""
 
     # Save text button
-    col1, col2=st.columns(2)
+    col1, col2, col3=st.columns(3)
     
     with col1:
         if st.button("Save Text", disabled=save_button_disabled):
@@ -290,26 +290,17 @@ def main():
                 st.rerun()  
             else:
                 st.write("maybe saved already")
+        # Show confirmation message and ClearInput button
+    if st.session_state.get("show_confirmation", False):
+        st.success("Text saved successfully!")
+        st.session_state.show_confirmation = False
 
     with col2:
         if st.button("activate save"):
             st.session_state.text_area_content = user_text
             st.rerun()
-    # Show confirmation message and ClearInput button
-    if st.session_state.get("show_confirmation", False):
-        st.success("Text saved successfully!")
-        #if st.button("ClearInput"):
-            #if st.session_state.showing == False:
-                #st.session_state.text_area_content = ""
-                #user_text =""
-                # st.session_state.showing == True
-                #st.rerun()
-
-        st.session_state.show_confirmation = False
- 
-    # Download button
-    col1, col2= st.columns(2)
-    with col1:
+    
+    with col3:
         #if st.button("Download Saved File"):
         if st.session_state.file_content:
             st.download_button(
@@ -321,11 +312,7 @@ def main():
         else:
             st.error("No file found to download.")
 
-    with col2:
-        if st.button("future design"):
-            st.write("")
-    #st.code(st.session_state.matching_paragraphs)
-                #st.rerun()
+    
     # Search functionality
     st.subheader("Search for Information")
     search_phrase = st.text_input(

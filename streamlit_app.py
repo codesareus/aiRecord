@@ -231,7 +231,7 @@ def main():
                 plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
                 #st.write(plain_text)
                 # plane tax does not have ** however,*** still in  speech  file
-                characters_to_remove = "}*"
+                characters_to_remove = "}*#"
                 # Remove specific characters
                 for char in characters_to_remove:
                     plain_text = plain_text.replace(char, "")
@@ -386,7 +386,7 @@ def main():
                 # Convert the cleaned text to speech
                 #tts = gTTS(plain_text, lang="zh")
                 # Remove specific characters
-                characters_to_remove= "*}"
+                characters_to_remove= "*#}"
                 for char in characters_to_remove:
                     plain_text = plain_text.replace(char, "")
     

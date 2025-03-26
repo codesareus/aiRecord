@@ -302,8 +302,11 @@ def main():
         st.session_state.show_confirmation = False
 
     with col3:
-        if st.button("activate save"):
-            st.session_state.text_area_content = user_text
+        if st.button("activate save" if st.session_state.text_area_content =="" else "dim save"):
+            if st.session_state.text_area_content =="":
+                st.session_state.text_area_content = user_text
+            else:
+                st.session_state.text_area_content = ""
             st.rerun()
     
     with col2:

@@ -435,5 +435,6 @@ if __name__ == "__main__":
 #######
     
 st.image(st.session_state.image)
+st.image("note.jpg")
 #fig, axes = plt.subplots(nro
 #from textblob import TextBlob

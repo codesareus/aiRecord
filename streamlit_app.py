@@ -5,6 +5,10 @@ import pytz
 import re  # Import regex
 import os
 import tempfile
+import pyperclip
+
+# Optional: Print the result
+print("Cleaned text (copied to clipboard):\n", cleaned_text)
 
 images=["lotus.jpg", "cherry.jpeg","fivek.jpg"]
 def getImage(num=0):
@@ -196,6 +200,15 @@ def main():
                 with open("aiRecord.txt", "wb") as f:
                     f.write(uploaded_file.getbuffer())
                     st.success("aiRecord.txt saved successfully!")
+                    
+    # Read clipboard content
+    raw_text = pyperclip.paste()
+
+# Remove Markdown symbols (e.g., #, *, -, colons, etc.)
+    cleaned_text = re.sub(r'[#*\-]', '', raw_text)
+
+# Update the clipboard with cleaned text
+    pyperclip.copy(cleaned_text)
             
     # Text input area
     user_text = st.text_area(

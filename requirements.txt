@@ -9,4 +9,5 @@ matplotlib
 scikit-learn
 pandas
 pandas_market_calendars
-requests
+request
+pyperclip

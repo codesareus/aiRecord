@@ -10,4 +10,3 @@ scikit-learn
 pandas
 pandas_market_calendars
 request
-pyperclip

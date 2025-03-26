@@ -2,11 +2,5 @@ datetime
 streamlit
 gtts
 pytz
-pydub
-textblob
-numpy
-matplotlib
-scikit-learn
-pandas
-pandas_market_calendars
-request
+re
+tempfile

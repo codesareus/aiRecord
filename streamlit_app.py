@@ -206,7 +206,7 @@ def main():
         height=500
     )
 
-    col1, col2, col3, col4=st.columns(4)
+    col1, col2, col3, col4, col5=st.columns(5)
     with col1:
         if st.button("recentR 1000"):
             st.session_state.text_area_content = f"Recent 1000: {st.session_state.file_content[-1000:][:50]}"
@@ -223,6 +223,10 @@ def main():
             st.session_state.text_area_contentR = "Recent 4000: " + cleanSymbols(st.session_state.file_content[-4000:])
             st.rerun()
     with col4:
+        if st.button("useNow"):
+            st.session_state.text_area_contentR = user_text
+            st.rerun()
+    with col5:
         if st.button("Show Recent"):
             st.session_state.text_area_content = st.session_state.text_area_contentR
             st.session_state.showing = False

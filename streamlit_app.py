@@ -6,9 +6,6 @@ import re  # Import regex
 import os
 import tempfile
 
-# Optional: Print the result
-print("Cleaned text (copied to clipboard):\n", cleaned_text)
-
 images=["lotus.jpg", "cherry.jpeg","fivek.jpg"]
 def getImage(num=0):
     return images[num]

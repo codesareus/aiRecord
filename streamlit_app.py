@@ -288,8 +288,8 @@ def main():
     
     with col1:
         if st.button("Save Text", disabled=save_button_disabled):
-            if  user_text != "" and user_text.strip() :
-                save_text_to_file(user_text)
+            if  user_text != "" and cleanSymbols(user_text.strip()):
+                save_text_to_file(cleanSymbols(user_text.strip()))
                 st.session_state.text_area_content = ""
             #user_text =""
                 st.session_state.show_confirmation = True

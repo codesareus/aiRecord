@@ -6,12 +6,6 @@ import re  # Import regex
 import os
 import tempfile
 
-images=["lotus.jpg", "cherry.jpeg","fivek.jpg"]
-def getImage(num=0):
-    return images[num]
-    
-st.image(images[1],width=705)
-
 midwest = pytz.timezone("America/Chicago")
 # Define the filename in the same directory as the script
 FILE_NAME = "aiRecord.txt"
@@ -106,7 +100,12 @@ def cleanSymbols(text=""):
 # Streamlit app
 def main():
     st.title("AI Record App")
-
+    images=["lotus.jpg", "cherry.jpeg","fivek.jpg"]
+    
+    def getImage(num=0):
+        return images[num]
+    
+    st.image("lotus.jpg",width=705)
     # Initialize session state for file content
     if "file_content" not in st.session_state:
         try:

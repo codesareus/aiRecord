@@ -287,7 +287,7 @@ def main():
     save_button_disabled = secret_key != "zzzzzzzzz" or user_text == "" or st.session_state.text_area_content == ""
 
     # Save text button
-    col1, col2, col3=st.columns(3)
+    col1, col2=st.columns(2)
     
     with col1:
         if st.button("Save Text", disabled=save_button_disabled):
@@ -314,26 +314,13 @@ def main():
             else:
                 st.error("No file found to download.")
 
-    with col3:
+    with col2:
         if st.button("activate save" if st.session_state.text_area_content =="" else "dim save"):
             if st.session_state.text_area_content =="":
                 st.session_state.text_area_content = user_text
             else:
                 st.session_state.text_area_content = ""
             st.rerun()
-    
-    with col2:
-        #if st.button("Download Saved File"):
-        if st.session_state.file_content:
-            st.download_button(
-                label="Download aiRecord.txt",
-                data=st.session_state.file_content,
-                file_name="aiRecord.txt",
-                mime="text/plain"
-            )
-        else:
-            st.error("No file found to download.")
-
     
     # Search functionality
     st.subheader("Search for Information")

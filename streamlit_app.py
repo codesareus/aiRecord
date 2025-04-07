@@ -300,9 +300,19 @@ def main():
             else:
                 st.write("maybe saved already")
         # Show confirmation message and ClearInput button
-    if st.session_state.get("show_confirmation", False):
-        st.success("Text saved successfully!")
-        st.session_state.show_confirmation = False
+        if st.session_state.get("show_confirmation", False):
+            st.success("Text saved successfully!")
+            st.session_state.show_confirmation = False
+
+            if st.session_state.file_content:
+                st.download_button(
+                    label="Download aiRecord.txt",
+                    data=st.session_state.file_content,
+                    file_name="aiRecord.txt",
+                    mime="text/plain"
+                )
+            else:
+                st.error("No file found to download.")
 
     with col3:
         if st.button("activate save" if st.session_state.text_area_content =="" else "dim save"):

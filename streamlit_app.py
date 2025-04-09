@@ -232,7 +232,7 @@ def main():
             st.rerun()
         
 # Speak button
-    col1, col2, col3=st.columns(3)
+    col1, col4, col2, col3=st.columns(4)
     with col1:
         if st.button("🔊 Talk Recent"):
             if st.session_state.text_area_contentR:
@@ -278,6 +278,32 @@ def main():
                 st.session_state.text_area_content=""
                 st.session_state.showing = True
             st.rerun()
+
+    with col4:
+        if st.button("🔊 Talk english"):
+            if st.session_state.text_area_contentR:
+                plain_text = re.sub(r'<.*?>', '', st.session_state.text_area_contentR)
+                #st.write(plain_text)
+                # plane tax does not have ** however,*** still in  speech  file
+                #characters_to_remove = "}*#"
+                # Remove specific characters
+                #for char in characters_to_remove:
+                    #plain_text = plain_text.replace(char, "")
+                plain_text = cleanSymbols(plain_text)
+
+                tts = gTTS(text=plain_text, lang="en")
+                tts.save("recent.mp3")
+                # Play the generated audio
+                st.audio("recent.mp3")
+                with open("recent.mp3", "rb") as file:
+                        st.download_button(
+                            label="Download Eng speak",
+                            data=file,
+                            file_name=f"{st.session_state.text_area_contentR[:12]}.mp3",
+                            mime="audio/mp3"            
+                        )
+            else: 
+                st.write("no text to talk")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
     st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")

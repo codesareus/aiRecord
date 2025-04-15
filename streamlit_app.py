@@ -306,7 +306,7 @@ def main():
                 st.write("no text to talk")
     
     content_without_whitespace = "".join(st.session_state.file_content[-20:-1].split())# space is cause line breaks in display
-    st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n\n")[0]}")
+    st.code(f"Last: {content_without_whitespace}...{st.session_state.file_content.split("\n")[0]}")
 
     # Secret key input
     secret_key = st.text_input("Enter the secret key to enable saving:", type="password")
